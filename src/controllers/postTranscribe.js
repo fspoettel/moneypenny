@@ -35,7 +35,6 @@ const postTranscribe = (req, res, next) => {
 
   const params = {};
 
-  let hasFile = false;
   let basename;
   let originalName;
   let tmpPath;
@@ -77,7 +76,6 @@ const postTranscribe = (req, res, next) => {
 
   busboy.on('file', async (fieldname, file, filename) => {
     let fileStream;
-    hasFile = true;
 
     try {
       fileStream = await FileType.stream(file);
@@ -85,6 +83,15 @@ const postTranscribe = (req, res, next) => {
     } catch (err) {
       return file.resume();
     }
+
+    file.on('limit', () => {
+      debug(`File too large: ${tmpPath}`);
+      res.header('Connection', 'Close');
+      fileStream.unpipe(writeStream);
+      fileStream.end();
+      writeStream.end();
+      onError(new LimitError('File is too large'));
+    });
 
     const { fileType } = fileStream;
     if (!fileType.mime.startsWith('audio') && !fileType.mime.startsWith('video')) {
@@ -105,22 +112,12 @@ const postTranscribe = (req, res, next) => {
     const { writeStream, promise } = writeTempFile(tmpPath);
     uploadPromise = promise;
 
-    file.on('limit', () => {
-      debug(`File too large: ${tmpPath}`);
-      res.header('Connection', 'Close');
-      fileStream.unpipe(writeStream);
-      fileStream.end();
-      writeStream.end();
-      onError(new LimitError('File is too large'));
-    });
-
     fileStream.pipe(writeStream);
   });
 
   busboy.on('finish', async () => {
     debug(`Finished parsing form data`);
 
-    if (!hasFile) return onError(new ValidationError('No file to transcribe'));
     if (uploadPromise == null) return onError(new ValidationError('Error while processing file.'));
 
     try {
@@ -142,12 +139,12 @@ const postTranscribe = (req, res, next) => {
         removeTempFile(tmpPath)
       ]);
 
-      await removeObject(`${basename}.flac`);
-
       debug(`Sending transcript with ${transcript.length} characters`);
       res.set('Content-Type', 'text/plain');
       res.set('Content-Disposition', `attachment; filename=${originalName}.txt`);
       res.status(200).send(transcript);
+
+      removeObject(`${basename}.flac`);
     } catch (err) {
       return onError(err);
     }

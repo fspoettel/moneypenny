@@ -5,9 +5,7 @@ const debug = require('debug')('app:disk');
 const removeTempFile = (path) => {
   debug(`Removing file: ${path}`)
   fs.promises.unlink(path)
-    .then(() => {
-      debug(`Removed file: ${path}`)
-    })
+    .then(() => { debug(`Removed file: ${path}`) })
     .catch((err) => {
       console.error(err);
     });

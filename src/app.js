@@ -44,7 +44,10 @@ function makeApp() {
     }
 
     res.status(status);
-    res.json(status === 500 ? { message: 'Internal server error' } : { message: err.message });
+    res.json(status === 500
+      ? { message: 'Internal server error' }
+      : { message: err.message }
+    );
   });
 
   return app;

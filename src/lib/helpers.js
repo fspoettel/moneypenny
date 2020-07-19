@@ -1,7 +1,6 @@
-
 function fmtTime(num) {
   const padZero = str => str.padStart(2, '0');
-  
+
   const hours = Math.floor(num / 3600);
   const minutes = Math.floor((num % 3600) / 60);
   const seconds = Math.floor(num % 60);

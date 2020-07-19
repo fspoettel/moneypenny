@@ -35,26 +35,23 @@ function gcsUploadStream(key) {
   const bucket = storageClient.bucket(GOOGLE_BUCKET);
   const blob = bucket.file(key);
 
-  const googleCloudStorageStream = blob.createWriteStream({
+  const gcsStream = blob.createWriteStream({
     resumable: false,
     validation: false,
-    timeout: 1000 * 60 * 60,
   });
 
   debug(`Starting upload for ${key}`);
-  pass.pipe(googleCloudStorageStream);
+  pass.pipe(gcsStream);
 
   const promise = new Promise((resolve, reject) => {
-    googleCloudStorageStream.on('error', err => {
+    gcsStream.on('error', err => {
       debug(`Upload failed for ${key}`);
-      googleCloudStorageStream.end();
-      reject(err);
+      return reject(err);
     });
 
-    googleCloudStorageStream.on('finish', () => {
+    gcsStream.on('finish', () => {
       debug(`Upload finished for ${key}`);
-      googleCloudStorageStream.end();
-      resolve(blob.name);
+      return resolve(blob.name);
     });
   });
 
@@ -72,4 +69,3 @@ module.exports = {
   recognize,
   removeObject
 };
-
