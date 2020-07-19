@@ -46,19 +46,6 @@
       </div>
     </div>
     <div class="field">
-      <label class="field-label" for="speaker_count">Speaker Count<abbr>*</abbr></label>
-      <div class="field-inner">
-        <input
-          type="number"
-          name="speaker_count"
-          required
-          value="2"
-          min="1"
-          max="10"
-        />
-      </div>
-    </div>
-    <div class="field">
       <label class="field-label" for="language_code">Language<abbr>*</abbr></label>
       <div class="field-inner">
         <select name="language_code">
@@ -68,6 +55,31 @@
         </select>
       </div>
     </div>
+
+    <details class="form-advanced" open>
+      <summary>Diarization</summary>
+
+      <div class="field">
+        <label class="field-label" for="diarization">Enable (if language supported)</label>
+        <div class="field-inner">
+          <input type="checkbox" name="diarization" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="speaker_count">Speaker Count</label>
+        <div class="field-inner">
+          <input
+            type="number"
+            name="speaker_count"
+            required
+            value="2"
+            min="1"
+            max="15"
+          />
+        </div>
+      </div>
+    </details>
 
     <details class="form-advanced">
       <summary>Advanced Settings</summary>

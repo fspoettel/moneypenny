@@ -7,7 +7,13 @@ const { GOOGLE_BUCKET } = process.env;
 
 async function transcribe(gcsUri, params) {
   const languageCode = params.languageCode ?? 'en-US';
-  const speakerCount = params.speakerCount ?? 2;
+  const shouldDiarize = params.diarization ?? false;
+
+  const diarizationConfig = shouldDiarize ? {
+    enableSpeakerDiarization: shouldDiarize,
+    minSpeakerCount: params.speakerCount ?? 2,
+    maxSpeakerCount: params.speakerCount ?? 2,
+  } : undefined;
 
   const config = {
     config: {
@@ -18,11 +24,7 @@ async function transcribe(gcsUri, params) {
       enableWordTimeOffsets: true,
       enableWordConfidence: false,
       enableAutomaticPunctuation: params.punctuation ?? true,
-      diarizationConfig: {
-        enableSpeakerDiarization: speakerCount > 1,
-        minSpeakerCount: speakerCount,
-        maxSpeakerCount: speakerCount,
-      },
+      diarizationConfig,
       useEnhanced: true,
       model: params.model ?? getDefaultValue(MODEL),
       metadata: {
@@ -37,9 +39,25 @@ async function transcribe(gcsUri, params) {
     audio: { uri: `gs://${GOOGLE_BUCKET}/${gcsUri}` },
   };
 
-  debug(`Starting [${languageCode}] transcribe for file ${gcsUri}`, params);
+  debug(`Starting [${languageCode}] transcribe for file ${gcsUri}`, config);
   const { results } = await recognize(config);
   debug(`Finished transcribe for file: ${gcsUri}`);
+
+  if (shouldDiarize) {
+    const lastResult = results[results.length - 1];
+    const { words } = lastResult.alternatives[0];
+
+    return words
+      .reduce((acc, curr, index, arr) => {
+        const { startTime, speakerTag, word } = curr;
+        if (index > 0 && speakerTag === arr[index - 1].speakerTag) return `${acc} ${word}`;
+
+        const lines = `[${fmtTime(startTime.seconds)}] Speaker ${speakerTag}:\n${word}`;
+
+        if (index === 0) return lines;
+        return `${acc}\n\n${lines}`;
+      }, '');
+  }
 
   return results
     .reduce((acc, curr) => {

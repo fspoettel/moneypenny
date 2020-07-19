@@ -57,6 +57,9 @@ const postTranscribe = (req, res, next) => {
       case 'profanity_filter':
         params.profanityFilter = value === 'on';
         break;
+      case 'diarization':
+        params.diarization = value === 'on';
+        break;
       case 'punctuation':
         params.punctuation = value === 'on';
         break;
