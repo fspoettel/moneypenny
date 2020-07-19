@@ -11,16 +11,29 @@
 {% endmacro %}
 
 {% block content %}
-  <header>
-    <h1>Babelfish</h1>
-    <p>Transcribe audio &amp; video files with <a href="https://cloud.google.com/speech-to-text/">Google Cloud Speech-to-Text</a></p>
+  <header class="header">
+    <h1 class="title">
+<pre>███╗   ███╗ ██████╗ ███╗   ██╗███████╗██╗   ██╗██████╗ ███████╗███╗   ██╗███╗   ██╗██╗   ██╗
+████╗ ████║██╔═══██╗████╗  ██║██╔════╝╚██╗ ██╔╝██╔══██╗██╔════╝████╗  ██║████╗  ██║╚██╗ ██╔╝
+██╔████╔██║██║   ██║██╔██╗ ██║█████╗   ╚████╔╝ ██████╔╝█████╗  ██╔██╗ ██║██╔██╗ ██║ ╚████╔╝ 
+██║╚██╔╝██║██║   ██║██║╚██╗██║██╔══╝    ╚██╔╝  ██╔═══╝ ██╔══╝  ██║╚██╗██║██║╚██╗██║  ╚██╔╝  
+██║ ╚═╝ ██║╚██████╔╝██║ ╚████║███████╗   ██║   ██║     ███████╗██║ ╚████║██║ ╚████║   ██║   
+╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝     ╚══════╝╚═╝  ╚═══╝╚═╝  ╚═══╝   ╚═╝   
+                                                                                            
+
+</pre>
+    </h1>
+    <p class="sub">Your never tired, <i>slightly</i> incoherent robo-secretary. Built with the <a href="https://cloud.google.com/speech-to-text/" target="_blank" rel="noreferrer noopener">Google Cloud Speech-to-Text</a> API.</p>
   </header>
   <form class="form" method="POST" action="/transcribe" id="transcribe-form" enctype="multipart/form-data">
-    <div class="field field_upload">
-      <label for="file">File to transcribe (max. 500mb)<abbr>*</abbr></label>
-      <div class="field-inner">
+    <div class="field">
+      <div class="field-inner file">
+        <label id="file-label" class="button file-label" for="file">
+          Pick a file…
+        </label>
         <input
           accept="audio/*,video/*"
+          data-limit="{{limitMb}}"
           type="file"
           name="file"
           id="file"
@@ -28,9 +41,12 @@
           multiple="false"
         />
       </div>
+      <div class="field-instructions">
+        Max. upload size is {{limitMb}}mb. Most audio and video formats should be supported
+      </div>
     </div>
     <div class="field">
-      <label for="speaker_count">Speaker Count<abbr>*</abbr></label>
+      <label class="field-label" for="speaker_count">Speaker Count<abbr>*</abbr></label>
       <div class="field-inner">
         <input
           type="number"
@@ -38,12 +54,12 @@
           required
           value="2"
           min="1"
-          max="6"
+          max="10"
         />
       </div>
     </div>
     <div class="field">
-      <label for="language_code">Language</label>
+      <label class="field-label" for="language_code">Language<abbr>*</abbr></label>
       <div class="field-inner">
         <select name="language_code">
           {% for language in languages %}
@@ -57,7 +73,7 @@
       <summary>Advanced Settings</summary>
 
       <div class="field">
-        <label for="microphone_distance">Microphone Distance</label>
+        <label class="field-label" for="microphone_distance">Microphone Distance</label>
         <div class="field-inner">
           {{ selectfield('microphone_distance', microphoneDistances) }}
           </select>
@@ -65,35 +81,35 @@
       </div>
 
       <div class="field">
-        <label for="interaction_type">Interaction Type</label>
+        <label class="field-label" for="interaction_type">Interaction Type</label>
         <div class="field-inner">
           {{ selectfield('interaction_type', interactionTypes) }}
         </div>
       </div>
 
       <div class="field">
-        <label for="recording_device_type">Recording Device Type</label>
+        <label class="field-label" for="recording_device_type">Recording Device Type</label>
         <div class="field-inner">
           {{ selectfield('recording_device_type', recordingDeviceTypes) }}
         </div>
       </div>
 
       <div class="field">
-        <label for="industry_code">NAICS Industry Code</label>
+        <label class="field-label" for="industry_code">NAICS Industry Code</label>
         <div class="field-inner">
           <input type="text" name="industry_code" />
         </div>
       </div>
 
       <div class="field">
-        <label for="punctuation">Punctuation</label>
+        <label class="field-label" for="punctuation">Punctuation</label>
         <div class="field-inner">
           <input type="checkbox" name="punctuation" checked />
         </div>
       </div>
 
       <div class="field">
-        <label for="profanity_filter">Profanity Filter</label>
+        <label class="field-label" for="profanity_filter">Profanity Filter</label>
         <div class="field-inner">
           <input type="checkbox" name="profanity_filter" />
         </div>
@@ -101,7 +117,15 @@
     </details>
 
     <div class="form-actions">
-      <button id="submit" type="submit">Transcribe</button>
+      <button id="submit-btn" type="submit">Transcribe</button>
+      <div class="spinner">Hang tight, this might take a long time</div>
+    </div>
+    <div class="form-output">
+      <div class="error"></div>
+      <div class="success"></div>
     </div>
   </form>
+  <footer class="footer">
+    <span>🤖 2020, Berlin</span>
+  </footer>
 {% endblock %}

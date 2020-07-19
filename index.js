@@ -1,6 +1,7 @@
 require('dotenv').config();
-const debug = require('debug')('server');
 const { makeApp } = require('./src/app');
+
+const debug = require('debug')('app:server');
 
 (async () => {
   const app = makeApp();

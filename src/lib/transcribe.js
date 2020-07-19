@@ -1,13 +1,13 @@
 const { recognize } = require('./googleCloud');
 const { fmtTime, getDefaultValue } = require('./helpers');
 const { MODEL, INTERACTION_TYPE, MICROPHONE_DISTANCE, RECORDING_TYPE_DEVICE } = require('../constants');
-const debug = require('debug')('transcribe');
+const debug = require('debug')('app:transcribe');
 
 const { GOOGLE_BUCKET } = process.env;
 
 async function transcribe(gcsUri, params) {
-  console.log(params);
   const languageCode = params.languageCode ?? 'en-US';
+  const speakerCount = params.speakerCount ?? 2;
 
   const config = {
     config: {
@@ -19,9 +19,9 @@ async function transcribe(gcsUri, params) {
       enableWordConfidence: false,
       enableAutomaticPunctuation: params.punctuation ?? true,
       diarizationConfig: {
-        enableSpeakerDiarization: false,
-        minSpeakerCount: params.speakerCount ?? 2,
-        maxSpeakerCount: params.speakerCount ?? 2,
+        enableSpeakerDiarization: speakerCount > 1,
+        minSpeakerCount: speakerCount,
+        maxSpeakerCount: speakerCount,
       },
       useEnhanced: true,
       model: params.model ?? getDefaultValue(MODEL),
@@ -37,7 +37,7 @@ async function transcribe(gcsUri, params) {
     audio: { uri: `gs://${GOOGLE_BUCKET}/${gcsUri}` },
   };
 
-  debug(`Starting [${languageCode}] transcribe for file ${gcsUri}`);
+  debug(`Starting [${languageCode}] transcribe for file ${gcsUri}`, params);
   const { results } = await recognize(config);
   debug(`Finished transcribe for file: ${gcsUri}`);
 

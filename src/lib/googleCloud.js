@@ -2,6 +2,8 @@ const { SpeechClient } = require('@google-cloud/speech').v1p1beta1;
 const { Storage } = require('@google-cloud/storage');
 const { PassThrough } = require('stream');
 
+const debug = require('debug')('app:gcs');
+
 const {
   GOOGLE_BUCKET,
   GOOGLE_PROJECT_ID,
@@ -20,6 +22,13 @@ const credentials = {
 const storageClient = new Storage(credentials);
 const speechClient = new SpeechClient(credentials);
 
+function removeObject(key) {
+  debug(`Removing cloud storage object: ${key}`);
+  const bucket = storageClient.bucket(GOOGLE_BUCKET);
+  const blob = bucket.file(key);
+  return blob.delete(key);
+}
+
 function gcsUploadStream(key) {
   const pass = PassThrough();
 
@@ -32,15 +41,18 @@ function gcsUploadStream(key) {
     timeout: 1000 * 60 * 60,
   });
 
+  debug(`Starting upload for ${key}`);
   pass.pipe(googleCloudStorageStream);
 
   const promise = new Promise((resolve, reject) => {
     googleCloudStorageStream.on('error', err => {
+      debug(`Upload failed for ${key}`);
       googleCloudStorageStream.end();
       reject(err);
     });
 
     googleCloudStorageStream.on('finish', () => {
+      debug(`Upload finished for ${key}`);
       googleCloudStorageStream.end();
       resolve(blob.name);
     });
@@ -57,6 +69,7 @@ async function recognize(config) {
 
 module.exports = {
   gcsUploadStream,
-  recognize
+  recognize,
+  removeObject
 };
 

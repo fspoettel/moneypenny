@@ -1,15 +1,14 @@
 const path = require('path');
-const fs = require('fs');
 const express = require('express');
 const nunjucks = require('nunjucks');
 const postTranscribe = require('./controllers/postTranscribe');
 const getIndex = require('./controllers/getIndex');
 const helmet = require('helmet');
-const { asyncHandler } = require('./lib/helpers');
-const { gcsUploadStream } = require('./lib/googleCloud');
-const { flacEncoder } = require('./lib/ffmpeg');
+const { ValidationError, LimitError } = require('./constants');
 
 const { PORT } = process.env;
+
+const debug = require('debug')('app:server');
 
 function makeApp() {
   const app = express();
@@ -32,19 +31,20 @@ function makeApp() {
   app.get('/', getIndex);
   app.post('/transcribe', postTranscribe);
 
-  app.post('/transcribe-now', asyncHandler(async (req, res) => {
-    const { writeStream, promise } = gcsUploadStream(`cdn2.flac`);
-    flacEncoder(fs.createReadStream(path.join(process.cwd(), 'cdn.mp3')))
-      .pipe(writeStream);
-
-    await promise;
-    res.send('OK');
-  }));
-
   // eslint-disable-next-line no-unused-vars
   app.use((err, req, res, next) => {
-    console.error(err.stack)
-    res.status(500).json({ message: err.message });
+    debug(err.stack);
+
+    let status = 500;
+
+    if (err instanceof ValidationError) {
+      status = 400;
+    } else if (err instanceof LimitError) {
+      status = 413;
+    }
+
+    res.status(status);
+    res.json(status === 500 ? { message: 'Internal server error' } : { message: err.message });
   });
 
   return app;
