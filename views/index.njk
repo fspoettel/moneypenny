@@ -29,7 +29,7 @@
     <div class="field">
       <div class="field-inner file">
         <label id="file-label" class="button file-label" for="file">
-          Pick a file…
+          Pick a file
         </label>
         <input
           accept="audio/*,video/*"
@@ -50,7 +50,7 @@
       <div class="field-inner">
         <select name="language_code">
           {% for language in languages %}
-            <option value="{{language.code}}">{{language.name}}</option>
+            <option value="{{language.code}}" {% if language.isDefault %}selected{% endif %}>{{language.description}}</option>
           {% endfor %}
         </select>
       </div>

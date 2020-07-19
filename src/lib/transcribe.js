@@ -1,13 +1,14 @@
 const { recognize } = require('./googleCloud');
 const { fmtTime, getDefaultValue } = require('./helpers');
-const { MODEL, INTERACTION_TYPE, MICROPHONE_DISTANCE, RECORDING_TYPE_DEVICE } = require('../constants');
+const { MODEL, INTERACTION_TYPE, MICROPHONE_DISTANCE, RECORDING_TYPE_DEVICE, LANGUAGES } = require('../constants');
 const debug = require('debug')('app:transcribe');
 
 const { GOOGLE_BUCKET } = process.env;
 
 async function transcribe(gcsUri, params) {
   const languageCode = params.languageCode ?? 'en-US';
-  const shouldDiarize = params.diarization ?? false;
+  const lang = LANGUAGES[languageCode];
+  const shouldDiarize = (params.diarization ?? false) && lang.diarize;
 
   const diarizationConfig = shouldDiarize ? {
     enableSpeakerDiarization: shouldDiarize,
@@ -23,7 +24,7 @@ async function transcribe(gcsUri, params) {
       profanityFilter: params.profanityFilter ?? false,
       enableWordTimeOffsets: true,
       enableWordConfidence: false,
-      enableAutomaticPunctuation: params.punctuation ?? true,
+      enableAutomaticPunctuation: (params.punctuation ?? true) && lang.punctuation,
       diarizationConfig,
       useEnhanced: true,
       model: params.model ?? getDefaultValue(MODEL),
