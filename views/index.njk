@@ -1,0 +1,107 @@
+{% extends "layout.njk" %}
+
+{% macro selectfield(name, array) %}
+  <select name="{{name}}">
+    {% for val in array %}
+      <option value="{{val.key}}" {% if val.isDefault %}selected{% endif %}>
+        {{-val.description-}}
+      </option>
+    {% endfor %}
+  </select>
+{% endmacro %}
+
+{% block content %}
+  <header>
+    <h1>Babelfish</h1>
+    <p>Transcribe audio &amp; video files with <a href="https://cloud.google.com/speech-to-text/">Google Cloud Speech-to-Text</a></p>
+  </header>
+  <form class="form" method="POST" action="/transcribe" id="transcribe-form" enctype="multipart/form-data">
+    <div class="field field_upload">
+      <label for="file">File to transcribe (max. 500mb)<abbr>*</abbr></label>
+      <div class="field-inner">
+        <input
+          accept="audio/*,video/*"
+          type="file"
+          name="file"
+          id="file"
+          required
+          multiple="false"
+        />
+      </div>
+    </div>
+    <div class="field">
+      <label for="speaker_count">Speaker Count<abbr>*</abbr></label>
+      <div class="field-inner">
+        <input
+          type="number"
+          name="speaker_count"
+          required
+          value="2"
+          min="1"
+          max="6"
+        />
+      </div>
+    </div>
+    <div class="field">
+      <label for="language_code">Language</label>
+      <div class="field-inner">
+        <select name="language_code">
+          {% for language in languages %}
+            <option value="{{language.code}}">{{language.name}}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <details class="form-advanced">
+      <summary>Advanced Settings</summary>
+
+      <div class="field">
+        <label for="microphone_distance">Microphone Distance</label>
+        <div class="field-inner">
+          {{ selectfield('microphone_distance', microphoneDistances) }}
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="interaction_type">Interaction Type</label>
+        <div class="field-inner">
+          {{ selectfield('interaction_type', interactionTypes) }}
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="recording_device_type">Recording Device Type</label>
+        <div class="field-inner">
+          {{ selectfield('recording_device_type', recordingDeviceTypes) }}
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="industry_code">NAICS Industry Code</label>
+        <div class="field-inner">
+          <input type="text" name="industry_code" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="punctuation">Punctuation</label>
+        <div class="field-inner">
+          <input type="checkbox" name="punctuation" checked />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="profanity_filter">Profanity Filter</label>
+        <div class="field-inner">
+          <input type="checkbox" name="profanity_filter" />
+        </div>
+      </div>
+    </details>
+
+    <div class="form-actions">
+      <button id="submit" type="submit">Transcribe</button>
+    </div>
+  </form>
+{% endblock %}

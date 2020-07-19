@@ -1,0 +1,23 @@
+{
+  "dependencies": {
+    "@google-cloud/speech": "^4.1.1",
+    "@google-cloud/storage": "^5.1.2",
+    "busboy": "^0.3.1",
+    "debug": "^4.1.1",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "file-type": "^14.6.2",
+    "fluent-ffmpeg": "^2.1.2",
+    "helmet": "^3.23.3",
+    "nunjucks": "^3.2.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.4.0",
+    "nodemon": "^2.0.4"
+  },
+  "scripts": {
+    "dev": "nodemon index",
+    "inspect": "node --inspect index",
+    "start": "NODE_ENV=production node index"
+  }
+}
