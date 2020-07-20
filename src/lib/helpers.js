@@ -1,16 +1,17 @@
-function fmtTime(num) {
-  const padZero = str => str.padStart(2, '0');
+function fmtTime(googleTime) {
+  const padZero = (str, num = 2) => `${str}`.padStart(num, '0');
 
-  const hours = Math.floor(num / 3600);
-  const minutes = Math.floor((num % 3600) / 60);
-  const seconds = Math.floor(num % 60);
+  if (!googleTime) return '00:00:00,000';
 
-  const h = padZero(`${hours}`);
-  const min = padZero(`${minutes}`);
-  const sec = padZero(`${seconds}`);
+  const { seconds, nanos } = googleTime;
+  const millis = (seconds * 1000) + ((nanos ?? 0) / 1e+6);
 
-  const t = `${min}:${sec}`;
-  return hours > 0 ? `${h}:${t}` : t;
+  const s = Math.floor((millis / 1000) % 60);
+  const m = Math.floor(((millis / 1000) % 3600) / 60);
+  const h = Math.floor(millis / 1000 / 3600);
+  const ms = millis % 1000;
+
+  return `${padZero(h)}:${padZero(m)}:${padZero(s)},${padZero(ms, 3)}`;
 }
 
 function getDefaultValue(obj) {

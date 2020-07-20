@@ -8,7 +8,7 @@ const { GOOGLE_BUCKET } = process.env;
 async function transcribe(gcsUri, params) {
   const languageCode = params.languageCode ?? 'en-US';
   const lang = LANGUAGES[languageCode];
-  const shouldDiarize = (params.diarization ?? false) && lang.diarize;
+  const shouldDiarize = (params.diarization ?? false) && lang.diarization;
 
   const diarizationConfig = shouldDiarize ? {
     enableSpeakerDiarization: shouldDiarize,
@@ -41,38 +41,93 @@ async function transcribe(gcsUri, params) {
   };
 
   debug(`Starting [${languageCode}] transcribe for file ${gcsUri}`, config);
-  const { results } = await recognize(config);
+  const response = await recognize(config);
+
   debug(`Finished transcribe for file: ${gcsUri}`);
+  if (shouldDiarize) return `${diarizedResponseToSrt(response)}\n`;
+  return `${responseToSrt(response)}\n`;
+}
 
-  if (shouldDiarize) {
-    const lastResult = results[results.length - 1];
-    const { words } = lastResult.alternatives[0];
-
-    return words
-      .reduce((acc, curr, index, arr) => {
-        const { startTime, speakerTag, word } = curr;
-        if (index > 0 && speakerTag === arr[index - 1].speakerTag) return `${acc} ${word}`;
-
-        const lines = `[${fmtTime(startTime.seconds)}] Speaker ${speakerTag}:\n${word}`;
-
-        if (index === 0) return lines;
-        return `${acc}\n\n${lines}`;
-      }, '');
-  }
-
+function responseToSrt({ results }) {
   return results
-    .reduce((acc, curr) => {
-      const { alternatives } = curr;
-      if (!Array.isArray(alternatives) || alternatives.length === 0) return acc;
+  .reduce((acc, curr, index) => {
+    const { alternatives } = curr;
+    if (!Array.isArray(alternatives) || alternatives.length === 0) return acc;
 
-      const { transcript, words } = alternatives[0];
-      if (!transcript || !Array.isArray(words) || !words[0]) return acc;
+    const { transcript, words } = alternatives[0];
+    if (!transcript || !Array.isArray(words) || !words[0]) return acc;
 
-      const timestamp = `[${fmtTime(words[0]?.startTime?.seconds || 0)}]`;
-      const passage = `${timestamp}\n${transcript}`;
+    const firstWord = words[0];
+    const lastWord = words[words.length - 1];
 
-      return acc ? `${acc}\n\n${passage}` : passage;
-    }, '');
+    const timeStart = fmtTime(firstWord?.startTime);
+    const timeEnd = fmtTime(lastWord?.endTime);
+
+    const passage = `${index + 1}\n${timeStart} --> ${timeEnd}\n${transcript.trim()}`;
+    return acc ? `${acc}\n\n${passage}` : passage;
+  }, '');
+}
+
+function diarizedResponseToSrt({ results }) {
+  const lastResult = results[results.length - 1];
+  const { words } = lastResult.alternatives[0];
+
+  const res = words
+    .reduce((acc, curr, i, arr) => {
+      const {
+        content,
+        index,
+        lastEndTime,
+        lastSpeakerTag,
+        passage,
+      } = acc;
+      const { speakerTag, word } = curr;
+
+      const hasSpeakerChanged = lastSpeakerTag !== speakerTag;
+
+      const nextAcc = {
+        lastEndTime: curr.endTime,
+        lastSpeakerTag: speakerTag,
+      }
+
+      if (!hasSpeakerChanged) {
+        return {
+          ...nextAcc,
+          index: index,
+          content: content,
+          passage: `${passage} ${word}`,
+        };
+      }
+
+      const prevToken = `${content}${fmtTime(lastEndTime)}\n${passage}`;
+      const nextToken = `${index}\n${fmtTime(curr.startTime)} --> `;
+
+      let nextContent;
+
+      if (i === 0) {
+        nextContent = nextToken;
+      } else if (i === arr.length - 1) {
+        nextContent = prevToken;
+      } else {
+        nextContent = `${prevToken}\n\n${nextToken}`;
+      }
+
+      return {
+        ...nextAcc,
+        index: index + 1,
+        content: nextContent,
+        passage: `[Speaker ${speakerTag}] ${word}`,
+      };
+    }, {
+      passage: '',
+      content: '',
+      index: 1,
+      lastEndTime: null,
+      lastSpeakerTag: null,
+    });
+
+  return res.content;
 }
 
 module.exports = { transcribe };
+
