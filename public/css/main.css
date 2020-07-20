@@ -290,7 +290,7 @@ body {
 @media screen and (min-width: 40rem) {
   body {
     font-size: 1rem;
-    margin: 2rem 4rem;
+    margin: 2rem 4.5rem;
   }
 
   .header {
@@ -315,7 +315,7 @@ body {
   }
 
   .header {
-    margin-bottom: 6rem;
+    margin-bottom: 4.5rem;
   }
 }
 
