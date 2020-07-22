@@ -116,8 +116,12 @@ ready(() => {
       if (err.message && err.message.includes('NetworkError')) {
         el.outputError.innerHTML = `Error: File is too large`;
       } else if (err.json) {
-        const body = await err.json();
-        el.outputError.innerHTML = `Error: ${body.message}`;
+        try {
+          const body = await err.json();
+          el.outputError.innerHTML = `Error: ${body.message}`;
+        } catch (err) {
+          el.outputError.innerHTML = `Error: Internal Server Error`;
+        }
       } else {
         el.outputError.innerHTML = `Error: ${err.message}`;
       }
