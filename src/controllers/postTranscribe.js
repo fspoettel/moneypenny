@@ -12,7 +12,7 @@ const { ValidationError, ORIGINAL_MEDIA_TYPE, LimitError } = require('../constan
 const debug = require('debug')('app:server');
 
 const tmp = os.tmpdir();
-const { UPLOAD_LIMIT_MB } = process.env;
+const { AUTH_CODE, UPLOAD_LIMIT_MB } = process.env;
 
 const postTranscribe = (req, res, next) => {
   let busboy;
@@ -35,6 +35,7 @@ const postTranscribe = (req, res, next) => {
 
   const params = {};
 
+  let authCode;
   let basename;
   let originalName;
   let tmpPath;
@@ -42,6 +43,9 @@ const postTranscribe = (req, res, next) => {
 
   busboy.on('field', (fieldname, value) => {
     switch (fieldname) {
+      case 'auth_code':
+        authCode = value;
+        break;
       case 'speaker_count':
         params.speakerCount = Number.parseInt(value, 10);
         break;
@@ -121,6 +125,7 @@ const postTranscribe = (req, res, next) => {
   busboy.on('finish', async () => {
     debug(`Finished parsing form data`);
 
+    if (authCode !== AUTH_CODE) return onError(new ValidationError('Auth code incorrect'));
     if (uploadPromise == null) return onError(new ValidationError('Error while processing file.'));
 
     try {
