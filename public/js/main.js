@@ -38,9 +38,9 @@ function checkFileSize(fileInputEl) {
   const file = fileInputEl.files[0];
   const maxSize = fileInputEl.dataset.limit;
 
-  const size = ((file.size/1024)/1024).toFixed(4); // MB
+  const size = (file.size/1024/1024).toFixed(4); // MB
 
-  if (size > maxSize) {
+  if (size > Number.parseInt(maxSize, 10)) {
     throw new TypeError('NetworkError: File is too large');
   }
 }
