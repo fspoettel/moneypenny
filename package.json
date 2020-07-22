@@ -19,5 +19,7 @@
     "dev": "nodemon index",
     "inspect": "node --inspect index",
     "start": "NODE_ENV=production node index"
-  }
+  },
+  "engines" : { "node" : "14.x" },
+  "engineStrict" : true
 }
