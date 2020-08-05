@@ -1,9 +1,10 @@
 const fs = require('fs');
-const path = require('path');
 const os = require('os');
+const path = require('path');
 const Busboy = require('busboy');
 const FileType = require('file-type');
 const iconv = require('iconv-lite');
+
 const { gcsUploadStream, removeObject } = require('../lib/googleCloud');
 const { transcribe } = require('../lib/transcribe');
 const { flacEncoder } = require('../lib/ffmpeg');
@@ -87,7 +88,6 @@ const postTranscribe = (req, res, next) => {
 
     try {
       fileStream = await FileType.stream(file);
-      fileStream.on('close', () => { debug(`Closing file stream`); });
     } catch (err) {
       return file.resume();
     }
@@ -95,9 +95,9 @@ const postTranscribe = (req, res, next) => {
     file.on('limit', () => {
       debug(`File too large: ${tmpPath}`);
       res.header('Connection', 'Close');
-      fileStream.unpipe(writeStream);
       fileStream.end();
       writeStream.end();
+      fileStream.unpipe(writeStream);
       onError(new LimitError('File is too large'));
     });
 
@@ -139,16 +139,14 @@ const postTranscribe = (req, res, next) => {
 
     const { writeStream, promise: gcsPromise } = gcsUploadStream(`${basename}.flac`);
     debug(`Starting encode and upload to GCS for ${basename}`);
+
     const readStream = fs.createReadStream(tmpPath);
     flacEncoder(readStream).pipe(writeStream);
 
     try {
       const gcsUri = await gcsPromise;
 
-      const [transcript] = await Promise.all([
-        transcribe(gcsUri, params),
-        removeTempFile(tmpPath)
-      ]);
+      const [transcript] = await Promise.all([transcribe(gcsUri, params), removeTempFile(tmpPath)]);
 
       debug(`Sending transcript with ${transcript.length} characters`);
       const filename = `${originalName}.txt`;

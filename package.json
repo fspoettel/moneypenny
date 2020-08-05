@@ -2,6 +2,7 @@
   "dependencies": {
     "@google-cloud/speech": "^4.1.1",
     "@google-cloud/storage": "^5.1.2",
+    "@sentry/node": "^5.20.1",
     "busboy": "^0.3.1",
     "debug": "^4.1.1",
     "dotenv": "^8.2.0",
@@ -9,6 +10,7 @@
     "file-type": "^14.6.2",
     "fluent-ffmpeg": "^2.1.2",
     "helmet": "^3.23.3",
+    "iconv-lite": "^0.6.2",
     "nunjucks": "^3.2.1"
   },
   "devDependencies": {
@@ -20,6 +22,8 @@
     "inspect": "node --inspect index",
     "start": "NODE_ENV=production node index"
   },
-  "engines" : { "node" : "14.x" },
-  "engineStrict" : true
+  "engines": {
+    "node": "14.x"
+  },
+  "engineStrict": true
 }

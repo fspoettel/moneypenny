@@ -1,16 +1,18 @@
 const path = require('path');
 const express = require('express');
+const helmet = require('helmet');
 const nunjucks = require('nunjucks');
+const Sentry = require('@sentry/node');
 const postTranscribe = require('./controllers/postTranscribe');
 const getIndex = require('./controllers/getIndex');
-const helmet = require('helmet');
 const { ValidationError, LimitError } = require('./constants');
 
-const { PORT } = process.env;
+const { PORT, SENTRY_DSN } = process.env;
 
 const debug = require('debug')('app:server');
 
 function makeApp() {
+  Sentry.init({ dsn: SENTRY_DSN });
   const app = express();
   app.set('port', PORT || 3000);
   app.set('etag', false);
@@ -41,6 +43,8 @@ function makeApp() {
       status = 400;
     } else if (err instanceof LimitError) {
       status = 413;
+    } else {
+      Sentry.captureException(err);
     }
 
     res.status(status);
