@@ -19,13 +19,13 @@ async function postForm(formData) {
 }
 
 async function downloadResponse(response) {
-  const fileName = /.*; filename=(.*)$/.exec(response.headers.get('Content-Disposition'))[1];
+  const fileName = /.*;filename\*=utf-8''(.*)$/.exec(response.headers.get('Content-Disposition'))[1];
   const blob = await response.blob();
   const url = window.URL.createObjectURL(blob);
 
   const a = document.createElement('a');
   a.href = url;
-  a.download = fileName;
+  a.download = decodeURIComponent(fileName);
   a.style.display = 'none';
   document.body.appendChild(a);
   a.click();

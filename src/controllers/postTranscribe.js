@@ -3,6 +3,7 @@ const path = require('path');
 const os = require('os');
 const Busboy = require('busboy');
 const FileType = require('file-type');
+const iconv = require('iconv-lite');
 const { gcsUploadStream, removeObject } = require('../lib/googleCloud');
 const { transcribe } = require('../lib/transcribe');
 const { flacEncoder } = require('../lib/ffmpeg');
@@ -150,8 +151,11 @@ const postTranscribe = (req, res, next) => {
       ]);
 
       debug(`Sending transcript with ${transcript.length} characters`);
+      const filename = `${originalName}.txt`;
+
       res.set('Content-Type', 'text/plain');
-      res.set('Content-Disposition', `attachment; filename=${originalName}.txt`);
+      // See: https://stackoverflow.com/q/93551
+      res.set('Content-Disposition', `attachment;filename="${iconv.encode(filename, 'ascii')}";filename*=utf-8''${encodeURIComponent(filename)}`);
       res.status(200).send(transcript);
 
       removeObject(`${basename}.flac`);
