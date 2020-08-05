@@ -12,7 +12,7 @@ const { ValidationError, ORIGINAL_MEDIA_TYPE, LimitError } = require('../constan
 const debug = require('debug')('app:server');
 
 const tmp = os.tmpdir();
-const { AUTH_CODE, UPLOAD_LIMIT_MB } = process.env;
+const { AUTH_CODES, UPLOAD_LIMIT_MB } = process.env;
 
 const postTranscribe = (req, res, next) => {
   let busboy;
@@ -125,7 +125,9 @@ const postTranscribe = (req, res, next) => {
   busboy.on('finish', async () => {
     debug(`Finished parsing form data`);
 
-    if (authCode !== AUTH_CODE) return onError(new ValidationError('Auth code incorrect'));
+    const validAuthCodes = AUTH_CODES.split(',').map(str => str.trim());
+
+    if (!validAuthCodes.includes(authCode)) return onError(new ValidationError('Auth code incorrect'));
     if (uploadPromise == null) return onError(new ValidationError('Error while processing file.'));
 
     try {
