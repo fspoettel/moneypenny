@@ -1,7 +1,14 @@
 require('dotenv').config();
+const debug = require('debug')('app:server');
+const Sentry = require('@sentry/node');
 const { makeApp } = require('./src/app');
 
-const debug = require('debug')('app:server');
+const { NODE_ENV, SENTRY_DSN } = process.env;
+
+Sentry.init({
+  dsn: SENTRY_DSN,
+  environment: NODE_ENV || 'development',
+});
 
 (async () => {
   const app = makeApp();

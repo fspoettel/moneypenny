@@ -3,6 +3,8 @@ class ValidationError extends Error {}
 
 class LimitError extends Error {}
 
+class UnauthenticatedError extends Error {}
+
 const INTERACTION_TYPE = {
   INTERACTION_TYPE_UNSPECIFIED: {
     description: 'Unknown or other',
@@ -1106,8 +1108,9 @@ const LANGUAGES = {
 const LANGUAGE_ARRAY = Object.values(LANGUAGES);
 
 module.exports = {
-  ValidationError,
   LimitError,
+  UnauthenticatedError,
+  ValidationError,
   INTERACTION_TYPE,
   LANGUAGES,
   LANGUAGE_ARRAY,

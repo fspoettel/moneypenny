@@ -10,20 +10,23 @@ class FormController {
   }
 
   init() {
-    const file = document.querySelector('#file');
     const form = document.querySelector('#transcribe-form');
 
-    this.el.set('form', form);
-    this.el.set('submit', document.querySelector('#submit-btn'));
-    this.el.set('spinner', document.querySelector('.spinner'));
-    this.el.set('file', file);
-    this.el.set('fileLabel', document.querySelector('#file-label'));
-    this.el.set('output', document.querySelector('.form-output'));
-    this.el.set('outputError', document.querySelector('.form-output .error'));
+    if (form) {
+      const file = document.querySelector('#file');
 
-    file.addEventListener('change', this.onFileChange.bind(this));
-    form.addEventListener('submit', this.onFormSubmit.bind(this));
-    this.resetForm();
+      this.el.set('form', form);
+      this.el.set('submit', document.querySelector('#submit-btn'));
+      this.el.set('spinner', document.querySelector('.spinner'));
+      this.el.set('file', file);
+      this.el.set('fileLabel', document.querySelector('#file-label'));
+      this.el.set('output', document.querySelector('.form-output'));
+      this.el.set('outputError', document.querySelector('.form-output .error'));
+
+      file.addEventListener('change', this.onFileChange.bind(this));
+      form.addEventListener('submit', this.onFormSubmit.bind(this));
+      this.resetForm();
+    }
   }
 
   onFileChange(evt) {

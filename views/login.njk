@@ -1,0 +1,31 @@
+{% extends "layout.njk" %}
+
+{% block content %}
+  <form class="form" method="POST" action="/login" id="login-form">
+    <div class="field">
+      <label class="field-label" for="username">Username<abbr>*</abbr></label>
+      <div class="field-inner">
+        <input
+          type="text"
+          name="username"
+          required
+        />
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label" for="password">Password<abbr>*</abbr></label>
+      <div class="field-inner">
+        <input
+          autocomplete="current-password"
+          type="password"
+          name="password"
+          required
+        />
+      </div>
+    </div>
+
+      <div class="form-actions">
+      <button id="submit-btn" type="submit">Login</button>
+    </div>
+  </form>
+{% endblock %}

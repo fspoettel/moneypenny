@@ -11,33 +11,7 @@
 {% endmacro %}
 
 {% block content %}
-  <header class="header">
-    <h1 class="title">
-<pre class="crt">███╗   ███╗ ██████╗ ███╗   ██╗███████╗██╗   ██╗██████╗ ███████╗███╗   ██╗███╗   ██╗██╗   ██╗
-████╗ ████║██╔═══██╗████╗  ██║██╔════╝╚██╗ ██╔╝██╔══██╗██╔════╝████╗  ██║████╗  ██║╚██╗ ██╔╝
-██╔████╔██║██║   ██║██╔██╗ ██║█████╗   ╚████╔╝ ██████╔╝█████╗  ██╔██╗ ██║██╔██╗ ██║ ╚████╔╝ 
-██║╚██╔╝██║██║   ██║██║╚██╗██║██╔══╝    ╚██╔╝  ██╔═══╝ ██╔══╝  ██║╚██╗██║██║╚██╗██║  ╚██╔╝  
-██║ ╚═╝ ██║╚██████╔╝██║ ╚████║███████╗   ██║   ██║     ███████╗██║ ╚████║██║ ╚████║   ██║   
-╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝     ╚══════╝╚═╝  ╚═══╝╚═╝  ╚═══╝   ╚═╝   
-                                                                                            
-
-</pre>
-    </h1>
-    <p class="sub">Your never tired, <i>slightly</i> incoherent robo-secretary. Built with the <a href="https://cloud.google.com/speech-to-text/" target="_blank" rel="noreferrer noopener">Google Cloud Speech-to-Text</a> API.</p>
-  </header>
   <form class="form" method="POST" action="/transcribe" id="transcribe-form" enctype="multipart/form-data">
-    <div class="field">
-      <label class="field-label" for="auth_code">Auth Code<abbr>*</abbr></label>
-      <div class="field-inner">
-        <input
-          autocomplete="current-password"
-          type="password"
-          name="auth_code"
-          required
-        />
-      </div>
-    </div>
-
     <div class="field">
       <div class="field-inner file">
         <label id="file-label" class="button file-label" for="file">

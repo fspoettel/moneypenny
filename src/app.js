@@ -1,18 +1,25 @@
-const path = require('path');
 const express = require('express');
+const bodyParser = require('body-parser');
+const session = require('express-session');
+const connectRedis = require('connect-redis');
 const helmet = require('helmet');
 const nunjucks = require('nunjucks');
-const Sentry = require('@sentry/node');
-const postTranscribe = require('./controllers/postTranscribe');
+
 const getIndex = require('./controllers/getIndex');
-const { ValidationError, LimitError } = require('./constants');
+const getLogin = require('./controllers/getLogin');
+const postLogin = require('./controllers/postLogin');
+const postTranscribe = require('./controllers/postTranscribe');
 
-const { PORT, SENTRY_DSN } = process.env;
+const redisClient = require('./db/redis');
 
-const debug = require('debug')('app:server');
+const errorHandler = require('./lib/middleware/errorHandler');
+const disableCache = require('./lib/middleware/disableCache');
+const { ensureLogin, ensureLoginApi } = require('./lib/middleware/ensureLogin');
+const authMiddlewares = require('./lib/middleware/auth');
+
+const { NODE_ENV, PORT, SESSION_SECRET } = process.env;
 
 function makeApp() {
-  Sentry.init({ dsn: SENTRY_DSN });
   const app = express();
   app.set('port', PORT || 3000);
   app.set('etag', false);
@@ -22,37 +29,37 @@ function makeApp() {
     express: app,
   });
 
+  app.use('/static', express.static('public'));
+
+  app.use(bodyParser.urlencoded({ extended: false }));
+
+  const RedisStore = connectRedis(session);
+  app.use(session({
+    cookie: {
+      path: '/',
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+      sameSite: 'strict',
+      secure: NODE_ENV === 'production',
+    },
+    resave: false,
+    saveUninitialized: false,
+    secret: SESSION_SECRET,
+    store: new RedisStore({ client: redisClient }),
+  }));
+
   app.use(helmet());
-  app.use('/static', express.static(path.join(process.cwd(), 'public')));
+  app.use(disableCache);
 
-  app.use((req, res, next) => {
-    res.set('Cache-Control', 'no-store');
-    next();
-  });
+  app.use(authMiddlewares);
 
-  app.get('/', getIndex);
-  app.post('/transcribe', postTranscribe);
+  app.get('/login', getLogin);
+  app.post('/login', postLogin);
 
-  // eslint-disable-next-line no-unused-vars
-  app.use((err, req, res, next) => {
-    debug(err.stack);
+  app.get('/', ensureLogin, getIndex);
+  app.post('/transcribe', ensureLoginApi, postTranscribe);
 
-    let status = 500;
-
-    if (err instanceof ValidationError) {
-      status = 400;
-    } else if (err instanceof LimitError) {
-      status = 413;
-    } else {
-      Sentry.captureException(err);
-    }
-
-    res.status(status);
-    res.json(status === 500
-      ? { message: 'Internal server error' }
-      : { message: err.message }
-    );
-  });
+  app.use(errorHandler);
 
   return app;
 }

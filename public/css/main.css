@@ -188,6 +188,10 @@ body {
   overflow-x: auto;
 }
 
+.title a {
+  text-decoration: none;
+}
+
 .title pre {
   margin: 0;
   font-size: 4px;
@@ -251,6 +255,7 @@ body {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
+  margin-top: 1rem;
 }
 
 .form-actions .spinner {

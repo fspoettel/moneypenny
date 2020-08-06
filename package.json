@@ -1,17 +1,28 @@
 {
+  "name": "moneypenny",
+  "private": true,
+  "version": "0.1.0",
   "dependencies": {
     "@google-cloud/speech": "^4.1.1",
     "@google-cloud/storage": "^5.1.2",
     "@sentry/node": "^5.20.1",
+    "bcrypt": "^5.0.0",
+    "body-parser": "^1.19.0",
     "busboy": "^0.3.1",
+    "connect-redis": "^5.0.0",
     "debug": "^4.1.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-session": "^1.17.1",
     "file-type": "^14.6.2",
     "fluent-ffmpeg": "^2.1.2",
     "helmet": "^3.23.3",
     "iconv-lite": "^0.6.2",
-    "nunjucks": "^3.2.1"
+    "nunjucks": "^3.2.1",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0",
+    "redis": "^3.0.2",
+    "slonik": "^22.4.11"
   },
   "devDependencies": {
     "eslint": "^7.4.0",
@@ -20,7 +31,8 @@
   "scripts": {
     "dev": "nodemon index",
     "inspect": "node --inspect index",
-    "start": "NODE_ENV=production node index"
+    "start": "NODE_ENV=production node index",
+    "db:create": "sudo -u postgres psql -d moneypenny -a -f src/db/pg/create.sql"
   },
   "engines": {
     "node": "14.x"
