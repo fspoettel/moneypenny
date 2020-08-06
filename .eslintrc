@@ -1,6 +1,6 @@
 {
   "root": true,
-  "extends": "eslint:recommended",
+  "extends": "standard",
   "env": {
     "browser": true,
     "es6": true,

@@ -1,22 +1,22 @@
-const { UnauthenticatedError } = require("../../constants");
+const { UnauthenticatedError } = require('../../constants')
 
-function ensureLogin(req, res, next) {
+function ensureLogin (req, res, next) {
   if (req.isAuthenticated()) {
-      next();
+    next()
   } else {
-      res.redirect('/login');
+    res.redirect('/login')
   }
 }
 
-function ensureLoginApi(req, res, next) {
+function ensureLoginApi (req, res, next) {
   if (req.isAuthenticated()) {
-      next();
+    next()
   } else {
-      return next(new UnauthenticatedError('Not Logged In'));
+    return next(new UnauthenticatedError('Not Logged In'))
   }
 }
 
 module.exports = {
   ensureLogin,
   ensureLoginApi
-};
+}

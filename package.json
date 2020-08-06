@@ -26,13 +26,19 @@
   },
   "devDependencies": {
     "eslint": "^7.4.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
     "nodemon": "^2.0.4"
   },
   "scripts": {
     "dev": "nodemon index",
-    "inspect": "node --inspect index",
     "start": "NODE_ENV=production node index",
-    "db:create": "sudo -u postgres psql -d moneypenny -a -f src/db/pg/create.sql"
+    "lint": "eslint .",
+    "db:create": "sudo -u postgres psql -d moneypenny -a -f src/db/pg/create.sql",
+    "inspect": "node --inspect index"
   },
   "engines": {
     "node": "14.x"

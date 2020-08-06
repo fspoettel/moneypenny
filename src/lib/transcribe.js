@@ -1,20 +1,20 @@
-const { recognize } = require('./googleCloud');
-const { fmtTime, getDefaultValue } = require('./helpers');
-const { MODEL, INTERACTION_TYPE, MICROPHONE_DISTANCE, RECORDING_TYPE_DEVICE, LANGUAGES } = require('../constants');
-const debug = require('debug')('app:transcribe');
+const { recognize } = require('./googleCloud')
+const { fmtTime, getDefaultValue } = require('./helpers')
+const { MODEL, INTERACTION_TYPE, MICROPHONE_DISTANCE, RECORDING_TYPE_DEVICE, LANGUAGES } = require('../constants')
+const debug = require('debug')('app:transcribe')
 
-const { GOOGLE_BUCKET } = process.env;
+const { GOOGLE_BUCKET } = process.env
 
-async function transcribe(gcsUri, params) {
-  const languageCode = params.languageCode ?? 'en-US';
-  const lang = LANGUAGES[languageCode];
-  const shouldDiarize = (params.diarization ?? false) && lang.diarization;
+async function transcribe (gcsUri, params) {
+  const languageCode = params.languageCode ?? 'en-US'
+  const lang = LANGUAGES[languageCode]
+  const shouldDiarize = (params.diarization ?? false) && lang.diarization
 
   const diarizationConfig = shouldDiarize ? {
     enableSpeakerDiarization: shouldDiarize,
     minSpeakerCount: params.speakerCount ?? 2,
-    maxSpeakerCount: params.speakerCount ?? 2,
-  } : undefined;
+    maxSpeakerCount: params.speakerCount ?? 2
+  } : undefined
 
   const config = {
     config: {
@@ -34,43 +34,43 @@ async function transcribe(gcsUri, params) {
         microphoneDistance: params.microphoneDistance ?? getDefaultValue(MICROPHONE_DISTANCE),
         originalMediaType: params.originalMediaType,
         originalMimeType: params.originalMimeType,
-        recordingDeviceType: params.recordingDeviceType ?? getDefaultValue(RECORDING_TYPE_DEVICE),
-      },
+        recordingDeviceType: params.recordingDeviceType ?? getDefaultValue(RECORDING_TYPE_DEVICE)
+      }
     },
-    audio: { uri: `gs://${GOOGLE_BUCKET}/${gcsUri}` },
-  };
+    audio: { uri: `gs://${GOOGLE_BUCKET}/${gcsUri}` }
+  }
 
-  debug(`Starting [${languageCode}] transcribe for file ${gcsUri}`, config);
-  const response = await recognize(config);
+  debug(`Starting [${languageCode}] transcribe for file ${gcsUri}`, config)
+  const response = await recognize(config)
 
-  debug(`Finished transcribe for file: ${gcsUri}`);
-  if (shouldDiarize) return `${diarizedResponseToSrt(response)}\n`;
-  return `${responseToSrt(response)}\n`;
+  debug(`Finished transcribe for file: ${gcsUri}`)
+  if (shouldDiarize) return `${diarizedResponseToSrt(response)}\n`
+  return `${responseToSrt(response)}\n`
 }
 
-function responseToSrt({ results }) {
+function responseToSrt ({ results }) {
   return results
-  .reduce((acc, curr, index) => {
-    const { alternatives } = curr;
-    if (!Array.isArray(alternatives) || alternatives.length === 0) return acc;
+    .reduce((acc, curr, index) => {
+      const { alternatives } = curr
+      if (!Array.isArray(alternatives) || alternatives.length === 0) return acc
 
-    const { transcript, words } = alternatives[0];
-    if (!transcript || !Array.isArray(words) || !words[0]) return acc;
+      const { transcript, words } = alternatives[0]
+      if (!transcript || !Array.isArray(words) || !words[0]) return acc
 
-    const firstWord = words[0];
-    const lastWord = words[words.length - 1];
+      const firstWord = words[0]
+      const lastWord = words[words.length - 1]
 
-    const timeStart = fmtTime(firstWord?.startTime);
-    const timeEnd = fmtTime(lastWord?.endTime);
+      const timeStart = fmtTime(firstWord?.startTime)
+      const timeEnd = fmtTime(lastWord?.endTime)
 
-    const passage = `${index + 1}\n${timeStart} --> ${timeEnd}\n${transcript.trim()}`;
-    return acc ? `${acc}\n\n${passage}` : passage;
-  }, '');
+      const passage = `${index + 1}\n${timeStart} --> ${timeEnd}\n${transcript.trim()}`
+      return acc ? `${acc}\n\n${passage}` : passage
+    }, '')
 }
 
-function diarizedResponseToSrt({ results }) {
-  const lastResult = results[results.length - 1];
-  const { words } = lastResult.alternatives[0];
+function diarizedResponseToSrt ({ results }) {
+  const lastResult = results[results.length - 1]
+  const { words } = lastResult.alternatives[0]
 
   const res = words
     .reduce((acc, curr, i, arr) => {
@@ -79,15 +79,15 @@ function diarizedResponseToSrt({ results }) {
         index,
         lastEndTime,
         lastSpeakerTag,
-        passage,
-      } = acc;
-      const { speakerTag, word } = curr;
+        passage
+      } = acc
+      const { speakerTag, word } = curr
 
-      const hasSpeakerChanged = lastSpeakerTag !== speakerTag;
+      const hasSpeakerChanged = lastSpeakerTag !== speakerTag
 
       const nextAcc = {
         lastEndTime: curr.endTime,
-        lastSpeakerTag: speakerTag,
+        lastSpeakerTag: speakerTag
       }
 
       if (!hasSpeakerChanged) {
@@ -95,39 +95,38 @@ function diarizedResponseToSrt({ results }) {
           ...nextAcc,
           index: index,
           content: content,
-          passage: `${passage} ${word}`,
-        };
+          passage: `${passage} ${word}`
+        }
       }
 
-      const prevToken = `${content}${fmtTime(lastEndTime)}\n${passage}`;
-      const nextToken = `${index}\n${fmtTime(curr.startTime)} --> `;
+      const prevToken = `${content}${fmtTime(lastEndTime)}\n${passage}`
+      const nextToken = `${index}\n${fmtTime(curr.startTime)} --> `
 
-      let nextContent;
+      let nextContent
 
       if (i === 0) {
-        nextContent = nextToken;
+        nextContent = nextToken
       } else if (i === arr.length - 1) {
-        nextContent = prevToken;
+        nextContent = prevToken
       } else {
-        nextContent = `${prevToken}\n\n${nextToken}`;
+        nextContent = `${prevToken}\n\n${nextToken}`
       }
 
       return {
         ...nextAcc,
         index: index + 1,
         content: nextContent,
-        passage: `[Speaker ${speakerTag}] ${word}`,
-      };
+        passage: `[Speaker ${speakerTag}] ${word}`
+      }
     }, {
       passage: '',
       content: '',
       index: 1,
       lastEndTime: null,
-      lastSpeakerTag: null,
-    });
+      lastSpeakerTag: null
+    })
 
-  return res.content;
+  return res.content
 }
 
-module.exports = { transcribe };
-
+module.exports = { transcribe }

@@ -1,7 +1,7 @@
 const getLogin = (req, res) => {
   res.render('login.njk', {
-    title: 'Login',
-  });
-};
+    title: 'Login'
+  })
+}
 
-module.exports = getLogin;
+module.exports = getLogin

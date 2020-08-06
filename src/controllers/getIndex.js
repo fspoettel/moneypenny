@@ -2,8 +2,8 @@ const {
   INTERACTION_TYPE,
   MICROPHONE_DISTANCE,
   RECORDING_TYPE_DEVICE,
-  LANGUAGE_ARRAY,
-} = require('../constants');
+  LANGUAGE_ARRAY
+} = require('../constants')
 
 const getIndex = (req, res) => {
   res.render('index.njk', {
@@ -12,8 +12,8 @@ const getIndex = (req, res) => {
     languages: LANGUAGE_ARRAY,
     interactionTypes: Object.values(INTERACTION_TYPE),
     microphoneDistances: Object.values(MICROPHONE_DISTANCE),
-    recordingDeviceTypes: Object.values(RECORDING_TYPE_DEVICE),
-  });
-};
+    recordingDeviceTypes: Object.values(RECORDING_TYPE_DEVICE)
+  })
+}
 
-module.exports = getIndex;
+module.exports = getIndex

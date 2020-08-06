@@ -1,6 +1,6 @@
-const ffmpeg = require('fluent-ffmpeg');
+const ffmpeg = require('fluent-ffmpeg')
 
-function flacEncoder(inputStream) {
+function flacEncoder (inputStream) {
   return ffmpeg()
     .input(inputStream)
     .noVideo()
@@ -10,4 +10,4 @@ function flacEncoder(inputStream) {
     .pipe()
 }
 
-module.exports = { flacEncoder };
+module.exports = { flacEncoder }
