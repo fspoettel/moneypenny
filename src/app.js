@@ -23,6 +23,7 @@ function makeApp() {
   const app = express();
   app.set('port', PORT || 3000);
   app.set('etag', false);
+  app.set('trust proxy', true);
 
   nunjucks.configure('views', {
     autoescape: true,
