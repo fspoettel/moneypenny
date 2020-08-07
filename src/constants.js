@@ -126,10 +126,10 @@ const MODEL = {
     description: 'Best for audio that originated from from video or includes multiple speakers. Ideally the audio is recorded at a 16khz or greater sampling rate. This is a premium model that costs more than the standard rate.',
     key: 'video'
   },
-  isDefault: {
+  default: {
     isDefault: true,
     description: 'Best for audio that is not one of the specific audio models. For example, long-form audio. Ideally the audio is high-fidelity, recorded at a 16khz or greater sampling rate.',
-    key: 'isDefault'
+    key: 'default'
   }
 }
 
