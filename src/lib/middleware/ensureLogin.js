@@ -10,7 +10,4 @@ function ensureLoginApi (req, res, next) {
   return next(new UnauthenticatedError('Not Logged In'))
 }
 
-module.exports = {
-  ensureLogin,
-  ensureLoginApi
-}
+module.exports = { ensureLogin, ensureLoginApi }
