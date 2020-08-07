@@ -5,10 +5,12 @@ const { makeApp } = require('./src/app')
 
 const { NODE_ENV, SENTRY_DSN } = process.env
 
-Sentry.init({
-  dsn: SENTRY_DSN,
-  environment: NODE_ENV || 'development'
-})
+if (SENTRY_DSN) {
+  Sentry.init({
+    dsn: SENTRY_DSN,
+    environment: NODE_ENV || 'development'
+  })
+}
 
 ;(async () => {
   const app = makeApp()

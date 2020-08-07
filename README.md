@@ -1,8 +1,8 @@
 # moneypenny
 
-> Automatic transcription tool built around the Google Speech-To-Text API
+> Automatic transcription tool built around the Google Speech-To-Text API. It turns audio/video files into timestamped, `.srt`-formatted transcripts and has support for speaker separation and automatic punctuation.
 
-![Screenshot_2020-08-06 Moneypenny](https://user-images.githubusercontent.com/1682504/89548385-7f8b8c80-d7f6-11ea-9ada-e05fa23ee3b6.png)
+![Screenshot](https://github.com/fspoettel/moneypenny/blob/master/docs/screenshot.png)
 
 ## Self-Hosting
 
@@ -30,6 +30,15 @@ This service uses the _Google Cloud Speech-To-Text_ API to transcribe media file
   - `storage.objects.list`
 
 After setting the credentials as environment variables via `dokku config:set` (see above and `.env.example`), you should be able to use the service.
+
+## Configuration
+
+See `.env.example` for required and optional `.env` variables.
+
+* See [here](https://github.com/fspoettel/moneypenny#setting-up-google-cloud) for Google setup instructions
+* `UPLOAD_LIMIT_MB` sets the upload limit. This value will also have to be reflected in the nginx config (see above)
+* `SESSION_SECRET` (required) see [here](https://github.com/expressjs/session#secret)
+* `SENTRY_DSN` (optional)
 
 ## Development
 
