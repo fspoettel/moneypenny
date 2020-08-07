@@ -12,7 +12,8 @@ html,
 input,
 textarea,
 select,
-button {
+button,
+pre {
   font-family: 'Acer710', monospace;
 }
 
@@ -194,7 +195,7 @@ body {
 
 .title pre {
   margin: 0;
-  font-size: 4px;
+  font-size: 2px;
 }
 
 .form-advanced {
@@ -294,6 +295,14 @@ body {
   display: block;
 }
 
+@media screen and (min-width: 30rem) {
+  .title pre {
+    margin: 0;
+    font-size: 3px;
+  }
+}
+
+
 @media screen and (min-width: 40rem) {
   body {
     font-size: 1rem;
@@ -306,7 +315,7 @@ body {
 
   .title pre {
     margin: 0;
-    font-size: 8px;
+    font-size: 4px;
   }
 
   .field-label,
@@ -318,7 +327,7 @@ body {
 @media screen and (min-width: 60rem) {
   .title pre {
     margin: 0;
-    font-size: 12px;
+    font-size: 8px;
   }
 
   .header {
