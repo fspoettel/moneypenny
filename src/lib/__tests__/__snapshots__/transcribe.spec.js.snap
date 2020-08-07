@@ -1,0 +1,207 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`transcribe() always calls recognize() with a set of default params 1`] = `
+Array [
+  Array [
+    Object {
+      "audio": Object {
+        "uri": "gs://sample-bucket/sample-key",
+      },
+      "config": Object {
+        "diarizationConfig": undefined,
+        "enableAutomaticPunctuation": true,
+        "enableWordConfidence": false,
+        "enableWordTimeOffsets": true,
+        "encoding": "FLAC",
+        "languageCode": "en-US",
+        "maxAlternatives": 1,
+        "metadata": Object {
+          "industryNaicsCodeOfAudio": undefined,
+          "interactionType": null,
+          "microphoneDistance": null,
+          "originalMediaType": null,
+          "originalMimeType": undefined,
+          "recordingDeviceType": null,
+        },
+        "model": null,
+        "profanityFilter": false,
+        "useEnhanced": true,
+      },
+    },
+  ],
+]
+`;
+
+exports[`transcribe() when params.diarization is false parses diarized recognize() response to a .srt string 1`] = `
+"1
+00:00:02,300 --> 00:00:03,400
+[Speaker 1] Zeichnet jetzt auch.
+
+2
+00:00:05,200 --> 00:00:27,200
+[Speaker 2] So, hallo Frau hagelskamp, vielen Dank, dass Sie sich die Zeit genommen haben. Möchten Sie etwas zu sich sagen oder etwas ist halt echt ein Problem die Kamera gucken, ich gucke mal die Person an und dann sieht es immer so meine Augenlider sind dann immer so komisch, also. Nee, sowas
+
+3
+00:00:27,200 --> 00:00:39,900
+[Speaker 1] funktioniert relativ normal öffnen. Du kannst halt überlegen, ob du dich tiefer setzt.
+
+4
+00:00:42,100 --> 00:01:11,900
+[Speaker 2] Ja, ja, das stimmt. Das muss ich dann morgen noch ausgeweitet hoch, aber ich habe überlegt, ob ich mich vielleicht hier hin setze. Praktisch, also so und das Bild, weil dann es weiß und vielleicht ist einer Bild im Hintergrund oder so. Ja, und dann ist halt die Frage, wo ich die Fragen notiere. Ich nehme uns gerade auch noch nicht, ob das ist dann in dem 3. PC Account gespeichert nur so als Info
+
+5
+00:01:11,900 --> 00:01:15,900
+[Speaker 1] genau,
+
+6
+00:01:15,900 --> 00:01:18,400
+[Speaker 2] ansonsten muss ich ja gar nicht einstellen, weil
+
+7
+00:01:22,900 --> 00:01:25,700
+[Speaker 1] Ich sehe auch, dass du mich aufzeichnet bei der steht auch trinken
+
+8
+00:01:25,700 --> 00:01:44,800
+[Speaker 2] gerade ein bisschen rum. Breakout Sessions habe ich nämlich auch noch nie gemacht. Ja, aber eigentlich ist er so perfekt, glaube ich. Guck mir gleich mal an, wie es ist sagt immer noch irgendwas,
+
+9
+00:01:44,800 --> 00:02:11,000
+[Speaker 1] ich wollte mich gerade vorstellen, da sind sie mir ins Wort gefallen, ich bin ich heute Frau. Hackelkamp mediane geplant war falsch geschrieben, ich wollte sie aber nicht drauf aufmerksam, weil ich und ich ihn heute präsentieren wollte dieser formschöne Tag sein
+
+10
+00:02:11,000 --> 00:02:23,000
+[Speaker 2] oder besser, wenn ich habe jetzt wieder die Galerieansicht und im Vollbildmodus bist du net praktisch groß und ich bin halt so klein ist vielleicht auch besser oder
+
+11
+00:02:23,000 --> 00:02:29,500
+[Speaker 1] was Du machen könntest wäre noch also du hast
+
+12
+00:02:29,500 --> 00:02:32,200
+[Speaker 2] kann nur Galerie und Sprecher Ansicht.
+
+13
+00:02:36,700 --> 00:02:46,700
+[Speaker 1] Du machst einen Tag jung. Pressesprecher wie viel Leute sind
+
+14
+00:02:51,800 --> 00:03:14,700
+[Speaker 2] Rheinisches glaube ich so. Wenn also ich stelle dir Fragen und so wäre es ja so, ich finde das glaube ich eine Asos glaube ich doch ganz gut, ich frage mich halt, wie kann man das denn einstellen kriege die ganze Zeit E-Mails und natürlich richtig kacke, wie kann man das denn einstellen praktisch, dass immer die Person die redet groß ist bin ich jetzt bei dir gerade groß, aber
+
+15
+00:03:14,700 --> 00:03:34,300
+[Speaker 1] ich werde halt nicht groß, aber normalerweise bei ganz vielen Personen da. Hast du links oben? Weil wenn ich ganz viele Personen haben und dann quasi auf eine Blicke, dann bleibt dir ja fest bis ich wieder sage lösen.
+
+16
+00:03:39,200 --> 00:04:05,900
+[Speaker 2] Glaube ich finde es aber so tatsächlich ganz gut. Das ist Sturm. Das ist ja glaube ich, also, dass ich oben rechts klein zu sehen bin und selbst wenn ich deine Frage stelle. Oder so, du kannst es dir ja gleich mal angucken, ich habe es ja aufgezeichnet, der müsste sogar alles aufgenommen haben.
+
+17
+00:04:11,000 --> 00:04:17,700
+[Speaker 1] So beginn also mit den zweien und dann werden sie halt anfängt zu reden die Sprecher sich
+
+18
+00:04:17,700 --> 00:04:26,600
+[Speaker 2] ja, dass ich muss mal gucken. Weil theoretisch
+
+19
+00:04:26,600 --> 00:04:29,000
+[Speaker 1] ja
+
+20
+00:04:29,000 --> 00:04:40,100
+[Speaker 2] genau gucken, wo das jetzt gespeichert wurden Computer okay, vielen Dank für den Test
+"
+`;
+
+exports[`transcribe() when params.diarization is true parses recognize() response to a .srt string 1`] = `
+"1
+00:00:02,300 --> 00:00:03,400
+Zeichnet jetzt auch.
+
+2
+00:00:05,200 --> 00:00:23,600
+So, hallo Frau hagelskamp, vielen Dank, dass Sie sich die Zeit genommen haben. Möchten Sie etwas zu sich sagen oder etwas ist halt echt ein Problem die Kamera gucken, ich gucke mal die Person an und dann sieht es immer so meine Augenlider sind dann immer so komisch, also.
+
+3
+00:00:26,300 --> 00:00:34,300
+Nee, sowas funktioniert relativ normal öffnen.
+
+4
+00:00:37,200 --> 00:00:39,900
+Du kannst halt überlegen, ob du dich tiefer setzt.
+
+5
+00:00:42,100 --> 00:01:01,100
+Ja, ja, das stimmt. Das muss ich dann morgen noch ausgeweitet hoch, aber ich habe überlegt, ob ich mich vielleicht hier hin setze. Praktisch, also so und das Bild, weil dann es weiß und vielleicht ist einer Bild im Hintergrund oder so. Ja, und dann ist halt die Frage, wo ich die Fragen notiere.
+
+6
+00:01:05,000 --> 00:01:18,400
+Ich nehme uns gerade auch noch nicht, ob das ist dann in dem 3. PC Account gespeichert nur so als Info genau, ansonsten muss ich ja gar nicht einstellen, weil
+
+7
+00:01:22,900 --> 00:01:29,600
+Ich sehe auch, dass du mich aufzeichnet bei der steht auch trinken gerade ein bisschen rum.
+
+8
+00:01:31,400 --> 00:01:33,900
+Breakout Sessions habe ich nämlich auch noch nie gemacht.
+
+9
+00:01:35,500 --> 00:01:39,800
+Ja, aber eigentlich ist er so perfekt, glaube ich.
+
+10
+00:01:41,200 --> 00:02:00,400
+Guck mir gleich mal an, wie es ist sagt immer noch irgendwas, ich wollte mich gerade vorstellen, da sind sie mir ins Wort gefallen, ich bin ich heute Frau. Hackelkamp mediane geplant war falsch geschrieben, ich wollte sie aber nicht drauf aufmerksam, weil ich
+
+11
+00:02:02,900 --> 00:02:26,500
+und ich ihn heute präsentieren wollte dieser formschöne Tag sein oder besser, wenn ich habe jetzt wieder die Galerieansicht und im Vollbildmodus bist du net praktisch groß und ich bin halt so klein ist vielleicht auch besser oder was Du machen könntest wäre noch also
+
+12
+00:02:27,800 --> 00:02:32,200
+du hast kann nur Galerie und Sprecher Ansicht.
+
+13
+00:02:36,700 --> 00:02:37,800
+Du machst einen Tag jung.
+
+14
+00:02:43,200 --> 00:02:46,700
+Pressesprecher wie viel Leute sind
+
+15
+00:02:51,800 --> 00:03:21,200
+Rheinisches glaube ich so. Wenn also ich stelle dir Fragen und so wäre es ja so, ich finde das glaube ich eine Asos glaube ich doch ganz gut, ich frage mich halt, wie kann man das denn einstellen kriege die ganze Zeit E-Mails und natürlich richtig kacke, wie kann man das denn einstellen praktisch, dass immer die Person die redet groß ist bin ich jetzt bei dir gerade groß, aber ich werde halt nicht groß, aber normalerweise bei ganz vielen Personen da.
+
+16
+00:03:24,700 --> 00:03:34,300
+Hast du links oben? Weil wenn ich ganz viele Personen haben und dann quasi auf eine Blicke, dann bleibt dir ja fest bis ich wieder sage lösen.
+
+17
+00:03:39,200 --> 00:03:44,800
+Glaube ich finde es aber so tatsächlich ganz gut.
+
+18
+00:03:46,400 --> 00:03:48,500
+Das ist Sturm.
+
+19
+00:03:50,100 --> 00:03:58,400
+Das ist ja glaube ich, also, dass ich oben rechts klein zu sehen bin und selbst wenn ich deine Frage stelle.
+
+20
+00:04:00,200 --> 00:04:05,900
+Oder so, du kannst es dir ja gleich mal angucken, ich habe es ja aufgezeichnet, der müsste sogar alles aufgenommen haben.
+
+21
+00:04:11,000 --> 00:04:24,500
+So beginn also mit den zweien und dann werden sie halt anfängt zu reden die Sprecher sich ja, dass ich muss mal gucken.
+
+22
+00:04:25,600 --> 00:04:42,900
+Weil theoretisch ja genau gucken, wo das jetzt gespeichert wurden Computer okay, vielen Dank für den Test später.
+"
+`;

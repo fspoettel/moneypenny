@@ -67,6 +67,7 @@ const MICROPHONE_DISTANCE = {
 
 const ORIGINAL_MEDIA_TYPE = {
   ORIGINAL_MEDIA_TYPE_UNSPECIFIED: {
+    isDefault: true,
     description: 'Unknown original media type.',
     key: 'ORIGINAL_MEDIA_TYPE_UNSPECIFIED'
   },
