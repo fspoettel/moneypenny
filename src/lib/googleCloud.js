@@ -26,7 +26,7 @@ function removeObject (key) {
   debug(`Removing cloud storage object: ${key}`)
   const bucket = storageClient.bucket(GOOGLE_BUCKET)
   const blob = bucket.file(key)
-  return blob.delete(key)
+  return blob.delete()
 }
 
 function gcsUploadStream (key) {

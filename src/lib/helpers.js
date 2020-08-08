@@ -15,7 +15,7 @@ function fmtTime (googleTime) {
 }
 
 function getDefaultValue (obj) {
-  const value = Object.values(obj).find(x => x.default)
+  const value = Object.values(obj).find(x => x.isDefault)
   return value ? value.key : null
 }
 

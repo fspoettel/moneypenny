@@ -42,21 +42,6 @@ See `.env.example` for required and optional `.env` variables.
 
 ## Development
 
-### Mocking Google responses
+### Mocking Google STT responses
 
-``` js
-// transcribe.js
-await fsPromises.readFile(
-  path.join(
-    process.cwd(),
-    '__recordings__',
-    `sample-response${shouldDiarize ? '-diarize': ''}.json`
-  )
-)
-.then((file) => JSON.parse(file))
-
-// gcsStream
-if (process.env.NODE_ENV !== 'production') {
-  return { writeStream: new PassThrough(), promise: Promise.resolve() };
-}
-```
+Replace `recognize()` call in `transcribe.js` with `src/lib/__mocks__/googleCloud.js` implementation

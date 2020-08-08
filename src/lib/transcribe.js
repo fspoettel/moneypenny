@@ -1,11 +1,18 @@
 const { recognize } = require('./googleCloud')
 const { fmtTime, getDefaultValue } = require('./helpers')
-const { MODEL, INTERACTION_TYPE, MICROPHONE_DISTANCE, RECORDING_TYPE_DEVICE, LANGUAGES } = require('../constants')
+const {
+  INTERACTION_TYPE,
+  LANGUAGES,
+  MICROPHONE_DISTANCE,
+  MODEL,
+  ORIGINAL_MEDIA_TYPE,
+  RECORDING_TYPE_DEVICE
+} = require('../constants')
 const debug = require('debug')('app:transcribe')
 
 const { GOOGLE_BUCKET } = process.env
 
-async function transcribe (gcsUri, params) {
+async function transcribe (gcsKey, params = {}) {
   const languageCode = params.languageCode ?? 'en-US'
   const lang = LANGUAGES[languageCode]
   const shouldDiarize = (params.diarization ?? false) && lang.diarization
@@ -32,18 +39,18 @@ async function transcribe (gcsUri, params) {
         industryNaicsCodeOfAudio: params.industryNaicsCodeOfAudio ?? undefined,
         interactionType: params.interactionType ?? getDefaultValue(INTERACTION_TYPE),
         microphoneDistance: params.microphoneDistance ?? getDefaultValue(MICROPHONE_DISTANCE),
-        originalMediaType: params.originalMediaType,
+        originalMediaType: params.originalMediaType ?? getDefaultValue(ORIGINAL_MEDIA_TYPE),
         originalMimeType: params.originalMimeType,
         recordingDeviceType: params.recordingDeviceType ?? getDefaultValue(RECORDING_TYPE_DEVICE)
       }
     },
-    audio: { uri: `gs://${GOOGLE_BUCKET}/${gcsUri}` }
+    audio: { uri: `gs://${GOOGLE_BUCKET}/${gcsKey}` }
   }
 
-  debug(`Starting [${languageCode}] transcribe for file ${gcsUri}`, config)
+  debug(`Starting [${languageCode}] transcribe for file ${gcsKey}`, config)
   const response = await recognize(config)
 
-  debug(`Finished transcribe for file: ${gcsUri}`)
+  debug(`Finished transcribe for file: ${gcsKey}`)
   if (shouldDiarize) return `${diarizedResponseToSrt(response)}\n`
   return `${responseToSrt(response)}\n`
 }
