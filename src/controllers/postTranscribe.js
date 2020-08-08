@@ -7,7 +7,7 @@ const iconv = require('iconv-lite')
 
 const { gcsUploadStream, removeObject } = require('../lib/googleCloud')
 const { transcribe } = require('../lib/transcribe')
-const { flacEncoder } = require('../lib/ffmpeg')
+const { flacEncoder, getAudioSampleRate } = require('../lib/ffmpeg')
 const { writeTempFile, removeTempFile } = require('../lib/disk')
 const { ValidationError, ORIGINAL_MEDIA_TYPE, LimitError } = require('../constants')
 
@@ -129,11 +129,21 @@ const postTranscribe = (req, res, next) => {
       return onError(err)
     }
 
+    let sampleRate
+
+    try {
+      sampleRate = await getAudioSampleRate(tmpPath)
+      if (sampleRate == null) throw new ValidationError('Could not find audio tracks in media file')
+      if (sampleRate < 8000) throw new ValidationError('Sample rates below 8,000 Hz are not supported')
+    } catch (err) {
+      return onError(err)
+    }
+
     const { writeStream, promise: gcsPromise } = gcsUploadStream(`${basename}.flac`)
     debug(`Starting encode and upload to GCS for ${basename}`)
 
     const readStream = fs.createReadStream(tmpPath)
-    flacEncoder(readStream).pipe(writeStream)
+    flacEncoder(readStream, sampleRate).pipe(writeStream)
 
     try {
       const gcsUri = await gcsPromise
@@ -148,7 +158,9 @@ const postTranscribe = (req, res, next) => {
       res.set('Content-Disposition', `attachment;filename="${iconv.encode(filename, 'ascii')}";filename*=utf-8''${encodeURIComponent(filename)}`)
       res.status(200).send(transcript)
 
-      removeObject(`${basename}.flac`)
+      removeObject(`${basename}.flac`).catch(() => {
+        debug(`Failed to remove cloud storage object ${basename}`)
+      })
     } catch (err) {
       return onError(err)
     }
