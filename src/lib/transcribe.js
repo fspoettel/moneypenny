@@ -52,8 +52,8 @@ async function transcribe (gcsKey, params = {}) {
   const response = await recognize(config)
 
   debug(`Finished transcribe for file: ${gcsKey}`)
-  if (shouldDiarize) return `${defaultFormat.encodeDiarizedResult(response)}\n`
-  return `${defaultFormat.encodeResult(response)}\n`
+  if (shouldDiarize) return `${defaultFormat.encodeDiarizedResult(response, params.forceSubAtZero)}\n`
+  return `${defaultFormat.encodeResult(response, params.forceSubAtZero).text}\n`
 }
 
 module.exports = { transcribe }
