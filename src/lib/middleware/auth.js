@@ -3,6 +3,7 @@ const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const { sql } = require('slonik')
 const pool = require('../../db/pg')
+const { normalizeEmail } = require('../helpers')
 
 function selectUserByEmail (email) {
   return pool.connect((conn) => conn.maybeOne(
@@ -31,7 +32,7 @@ function selectUserById (id) {
 passport.use(new LocalStrategy(
   async function (username, password, done) {
     try {
-      const user = await selectUserByEmail(username)
+      const user = await selectUserByEmail(normalizeEmail(username))
       if (!user) return done(null, false)
 
       const match = await bcrypt.compare(password, user.password)

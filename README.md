@@ -13,7 +13,7 @@ This service is self-hostable via [dokku](http://dokku.viewdocs.io/dokku/). It r
 
 In order to create the database tables for this service, open `psql` via `dokku postgres:connect <your_app>` and run the instructions in `./src/db/pg/create.sql`
 
-After that, you can connect to your container and run `yarn add-user --email {an_email} --password {password_will_be_hashed}` to add the first user to the service. (**TODO:** Not implemented yet)
+After that, you can connect to your container and run `yarn add-user --email {an_email} --password {password_will_be_hashed}` to add the first user to the service.
 
 You will also have to add the content of `nginx.example.conf` to `/home/dokku/moneypenny/nginx.conf.d/upload.conf` to increase nginx's default timeouts since the STT API can take a very long time to process input. This would ideally be circumvented via a queue for async processing. I have not got around to implement that yet.
 

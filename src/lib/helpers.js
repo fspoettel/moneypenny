@@ -19,9 +19,18 @@ function getDefaultValue (obj) {
   return value ? value.key : null
 }
 
+function normalizeEmail (str) {
+  return str.trim().toLowerCase()
+}
+
 const asyncHandler = (callback) =>
   (req, res, next) => {
     callback(req, res, next).catch(next)
   }
 
-module.exports = { asyncHandler, fmtTime, getDefaultValue }
+module.exports = {
+  asyncHandler,
+  fmtTime,
+  getDefaultValue,
+  normalizeEmail
+}
