@@ -42,7 +42,7 @@ describe('transcribe()', () => {
     })
 
     it('parses recognize() response to a .srt string and forces zero sub', async () => {
-      const result = await transcribe(gcsKey, { diarization: false, forceSubAtZero: true })
+      const result = await transcribe(gcsKey, { diarization: true, forceSubAtZero: true })
       expect(result).toMatchSnapshot()
     })
   })
