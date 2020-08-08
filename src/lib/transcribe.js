@@ -1,6 +1,6 @@
 const { recognize } = require('./googleCloud')
 const { getDefaultValue } = require('./helpers')
-const defaultEncoder = require('./encoders/default')
+const defaultFormat = require('./formats/default')
 const {
   INTERACTION_TYPE,
   LANGUAGES,
@@ -52,8 +52,8 @@ async function transcribe (gcsKey, params = {}) {
   const response = await recognize(config)
 
   debug(`Finished transcribe for file: ${gcsKey}`)
-  if (shouldDiarize) return `${defaultEncoder.encodeDiarizedResult(response)}\n`
-  return `${defaultEncoder.encodeResult(response)}\n`
+  if (shouldDiarize) return `${defaultFormat.encodeDiarizedResult(response)}\n`
+  return `${defaultFormat.encodeResult(response)}\n`
 }
 
 module.exports = { transcribe }
