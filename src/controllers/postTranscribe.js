@@ -74,6 +74,9 @@ const postTranscribe = (req, res, next) => {
       case 'recording_device_type':
         params.recordingDeviceType = value
         break
+      case 'force_sub_at_zero':
+        params.forceSubAtZero = value === 'on'
+        break
       default:
         break
     }

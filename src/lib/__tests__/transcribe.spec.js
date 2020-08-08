@@ -23,16 +23,26 @@ describe('transcribe()', () => {
     })
   })
 
-  describe('when params.diarization is true', () => {
+  describe('when params.diarization is false', () => {
     it('parses recognize() response to a .srt string', async () => {
       const result = await transcribe(gcsKey, { diarization: false })
       expect(result).toMatchSnapshot()
     })
+
+    it('parses recognize() response to a .srt string and forces zero sub', async () => {
+      const result = await transcribe(gcsKey, { diarization: false, forceSubAtZero: true })
+      expect(result).toMatchSnapshot()
+    })
   })
 
-  describe('when params.diarization is false', () => {
+  describe('when params.diarization is true', () => {
     it('parses diarized recognize() response to a .srt string', async () => {
       const result = await transcribe(gcsKey, { diarization: true })
+      expect(result).toMatchSnapshot()
+    })
+
+    it('parses recognize() response to a .srt string and forces zero sub', async () => {
+      const result = await transcribe(gcsKey, { diarization: true, forceSubAtZero: true })
       expect(result).toMatchSnapshot()
     })
   })
