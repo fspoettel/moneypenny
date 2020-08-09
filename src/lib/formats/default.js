@@ -9,7 +9,7 @@ function addZeroSub (timeStart) {
 }
 
 function encodeResult ({ results }, forceSubAtZero) {
-  return results
+  const res = results
     .reduce((acc, curr) => {
       const { alternatives } = curr
       if (!Array.isArray(alternatives) || alternatives.length === 0) return acc
@@ -17,7 +17,7 @@ function encodeResult ({ results }, forceSubAtZero) {
       const { transcript, words } = alternatives[0]
       if (!transcript || !Array.isArray(words) || !words[0]) return acc
 
-      const { text, index } = acc
+      const { content, index } = acc
 
       const firstWord = words[0]
       const lastWord = words[words.length - 1]
@@ -33,21 +33,23 @@ function encodeResult ({ results }, forceSubAtZero) {
       const passage = `${currentIndex}\n${timeStart} --> ${timeEnd}\n${transcript.trim()}`
 
       // 1. When not the first passage
-      if (text) {
-        return { text: `${text}\n\n${passage}`, index: currentIndex }
+      if (content) {
+        return { content: `${content}\n\n${passage}`, index: currentIndex }
       }
 
       // 2. When zero sub is not forced or first timestamp is `00:00:00,000`
       if (!isZeroSub) {
-        return { text: passage, index: currentIndex }
+        return { content: passage, index: currentIndex }
       }
 
       // 3. When zero sub is forced and needs to be added
       return {
-        text: `${addZeroSub(timeStart)}${passage}`,
+        content: `${addZeroSub(timeStart)}${passage}`,
         index: currentIndex
       }
-    }, { index: 0, text: '' })
+    }, { index: 0, content: '' })
+
+  return res.content
 }
 
 function encodeDiarizedResult ({ results }, forceSubAtZero) {
@@ -76,7 +78,7 @@ function encodeDiarizedResult ({ results }, forceSubAtZero) {
         return {
           ...nextAcc,
           index: index,
-          content: content,
+          content,
           passage: `${passage} ${word}`
         }
       }

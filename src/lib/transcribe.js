@@ -1,7 +1,9 @@
 const { recognize } = require('./googleCloud')
 const { getDefaultValue } = require('./helpers')
 const defaultFormat = require('./formats/default')
+const punctuationFormat = require('./formats/punctuation')
 const {
+  FORMATS,
   INTERACTION_TYPE,
   LANGUAGES,
   MICROPHONE_DISTANCE,
@@ -16,8 +18,12 @@ const { GOOGLE_BUCKET } = process.env
 async function transcribe (gcsKey, params = {}) {
   const languageCode = params.languageCode ?? 'en-US'
   const lang = LANGUAGES[languageCode]
-  const shouldDiarize = (params.diarization ?? false) && lang.diarization
 
+  const isPunctuationFormat = params.transcriptFormat === FORMATS.PUNCTUATION.key &&
+    lang.punctuation
+  const format = isPunctuationFormat ? punctuationFormat : defaultFormat
+
+  const shouldDiarize = (params.diarization ?? false) && lang.diarization
   const diarizationConfig = shouldDiarize ? {
     enableSpeakerDiarization: shouldDiarize,
     minSpeakerCount: params.speakerCount ?? 2,
@@ -32,7 +38,7 @@ async function transcribe (gcsKey, params = {}) {
       profanityFilter: params.profanityFilter ?? false,
       enableWordTimeOffsets: true,
       enableWordConfidence: false,
-      enableAutomaticPunctuation: (params.punctuation ?? true) && lang.punctuation,
+      enableAutomaticPunctuation: ((params.punctuation ?? true) && lang.punctuation) || isPunctuationFormat,
       diarizationConfig,
       useEnhanced: true,
       model: params.model ?? getDefaultValue(MODEL),
@@ -55,8 +61,8 @@ async function transcribe (gcsKey, params = {}) {
   const response = await recognize(config)
 
   debug(`Finished transcribe for file: ${gcsKey}`)
-  if (shouldDiarize) return `${defaultFormat.encodeDiarizedResult(response, params.forceSubAtZero)}\n`
-  return `${defaultFormat.encodeResult(response, params.forceSubAtZero).text}\n`
+  if (shouldDiarize) return `${format.encodeDiarizedResult(response, params.forceSubAtZero)}\n`
+  return `${format.encodeResult(response, params.forceSubAtZero)}\n`
 }
 
 module.exports = { transcribe }

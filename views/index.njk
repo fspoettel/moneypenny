@@ -94,7 +94,7 @@
       <div class="field">
         <label class="field-label" for="transcript_format">Transcript Format</label>
         <div class="field-inner">
-          <select name="transcript_format" disabled>
+          <select name="transcript_format">
             {% for format in formats %}
               <option value="{{format.key}}" {% if format.isDefault %}selected{% endif %}>{{format.description}}</option>
             {% endfor %}
