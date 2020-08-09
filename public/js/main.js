@@ -146,6 +146,29 @@ class FormController {
 
 const form = new FormController()
 
+function stepAnimations () {
+  const animationContainers = Array.from(document.querySelectorAll('.ascii-animation'))
+
+  animationContainers.forEach((container) => {
+    const els = Array.from(container.querySelectorAll('.ascii-animation > *'))
+    let activeIndex = 0
+    const maxIndex = els.length - 1
+
+    setInterval(() => {
+      const nextIndex = activeIndex < maxIndex ? activeIndex + 1 : 0
+
+      const currentEl = els[activeIndex]
+      currentEl.classList.remove('active')
+
+      const nextEl = els[nextIndex]
+      nextEl.classList.add('active')
+
+      activeIndex = nextIndex
+    }, 800)
+  })
+}
+
 ready(() => {
   form.init()
+  stepAnimations()
 })

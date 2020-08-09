@@ -438,3 +438,12 @@ select[aria-disabled=true] {
 .form-output.is-active {
   display: block;
 }
+
+/* Animations */
+.ascii-animation > * {
+  display: none;
+}
+
+.ascii-animation > .active {
+  display: block;
+}
