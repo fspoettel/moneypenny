@@ -1,10 +1,16 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+/* Tyopgraphy */
 @font-face {
   font-family: 'Acer710';
   src: url('./fonts/Web_Acer710_CGA.woff') format('woff');
-}
-
-* {
-  box-sizing: border-box;
+  font-display: block;
 }
 
 body,
@@ -20,9 +26,8 @@ pre {
 body {
   font-size: 0.75rem;
   line-height: 1.5;
-  color: white;
-  margin: 0;
   background: blue;
+  color: white;
 }
 
 a {
@@ -43,6 +48,43 @@ p {
   margin: 0;
 }
 
+@media screen and (min-width: 40rem) {
+  body {
+    font-size: 1rem;
+  }
+}
+
+/* Button */
+button, .button {
+  -webkit-appearance: none;
+  appearance: none;
+  display: inline-block;
+  background: transparent;
+  border: none;
+  outline: none;
+  background: white;
+  font-size: 0.75rem;
+  line-height: 1;
+  color: black;
+  cursor: pointer;
+  padding: 0.75rem;
+  box-shadow: 2px 3px 0 3px darkblue;
+}
+
+.button:focus,
+button:focus {
+  box-shadow: 0 0 0 3px aqua;
+}
+
+button[disabled],
+.button[disabled] {
+  background: silver;
+  color: graytext;
+  cursor: default;
+  box-shadow: none;
+}
+
+/* Forms */
 input,
 textarea,
 select {
@@ -80,47 +122,7 @@ input[type="file"] {
   left: 0;
 }
 
-button, .button {
-  -webkit-appearance: none;
-  appearance: none;
-  display: inline-block;
-  background: transparent;
-  border: none;
-  outline: none;
-  background: white;
-  font-size: 0.75rem;
-  line-height: 1;
-  color: black;
-  cursor: pointer;
-  padding: 0.75rem;
-  box-shadow: 2px 3px 0 3px darkblue;
-}
-
-.button:focus,
-button:focus {
-  box-shadow: 0 0 0 3px aqua;
-}
-
-button[disabled],
-.button[disabled] {
-  background: silver;
-  color: graytext;
-  cursor: default;
-  box-shadow: none;
-}
-
-.field_file {
-  text-align: center;
-}
-
-.file-label {
-  margin-bottom: 0.75rem;
-}
-
-.file:focus-within .file-label {
-  box-shadow: 0 0 0 3px aqua;
-}
-
+/* Adapted from: https://css-tricks.com/styling-a-select-like-its-2019/ */
 select {
   -moz-appearance: none;
   -webkit-appearance: none;
@@ -163,8 +165,140 @@ select[aria-disabled=true] {
   background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22graytext%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
 }
 
-body {
-  margin: 2rem;
+/* See: https://www.sarasoueidan.com/blog/inclusively-hiding-and-styling-checkboxes-and-radio-buttons/ */
+.checkbox {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  --checked-state-bg-color:cyan;
+  --checked-state-check-color: black;
+  --outline-color: var(--checked-state-bg-color);
+  --outline-offset: 1px;
+}
+
+.checkbox input[type="checkbox"] {
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  opacity: 0;
+}
+
+.checkbox svg {
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.5rem;
+  margin-top: 0.1rem;
+}
+.checkbox svg * {
+  transition: all 0.1s linear;
+}
+
+.checkbox input[type="checkbox"]:checked + svg .cb-bg {
+  fill: var(--checked-state-bg-color);
+  stroke: var(--checked-state-bg-color);
+}
+.checkbox input[type="checkbox"]:checked + svg .cb-cm {
+  stroke: var(--checked-state-check-color);
+}
+
+.checkbox input[type="checkbox"]:focus + svg {
+  outline: 3px solid var(--outline-color);
+  outline-offset: var(--outline-offset);
+}
+
+.checkbox input[type="checkbox"]:focus:not(:focus-visible) + svg {
+  outline: none;
+}
+
+.checkbox span {
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.field + .field {
+  margin-top: 1rem;
+}
+
+.field_file + .field {
+  margin-top: 1.5rem;
+}
+
+.field-label,
+.field-instructions {
+  font-size: 0.5rem;
+}
+
+.field-label {
+  display: inline-block;
+  margin-bottom: 0.25rem;
+}
+
+.field-label abbr {
+  font-style: normal;
+  color: red;
+  margin-left: 0.125rem;
+}
+
+.field-instructions {
+  margin-top: 0.5rem;
+  color: silver;
+}
+
+.field_file {
+  text-align: center;
+}
+
+.file-label {
+  margin-bottom: 0.75rem;
+}
+
+
+.file:focus-within .file-label {
+  box-shadow: 0 0 0 3px aqua;
+}
+
+@media screen and (min-width: 40rem) {
+  .field-label,
+  .field-instructions {
+    font-size: 0.75rem;
+  }
+
+}
+
+/* Spinner */
+.spinner {
+  display: none;
+  font-size: 0.75rem;
+}
+
+.spinner.is-active {
+  display: inline-block;
+}
+
+.spinner::before {
+  content: "◡◡";
+  font-size: 1.5rem;
+  animation: spin 1s infinite linear;
+  margin-right: 0.25rem;
+}
+
+@keyframes spin {
+  0% {
+    content: "◡◡";
+  }
+
+  33.333% {
+    content: "⊙⊙";
+  }
+
+  66.666% {
+    content: "◠◠";
+  }
+}
+
+/* Layout */
+.page {
+  padding: 2rem;
 }
 
 .main {
@@ -192,6 +326,13 @@ body {
   text-align: center;
 }
 
+@media screen and (min-width: 40rem) {
+  .page {
+    padding: 2rem 4.5rem;
+  }
+}
+
+/* Header */
 .title {
   margin-bottom: 1rem;
   overflow-x: auto;
@@ -206,60 +347,70 @@ body {
   font-size: 2px;
 }
 
-.form-advanced {
+@media screen and (min-width: 21.5rem) {
+  .title pre {
+    margin: 0;
+    font-size: 3px;
+  }
+}
+
+@media screen and (min-width:  30rem) {
+  .title pre {
+    margin: 0;
+    font-size: 4px;
+  }
+}
+
+@media screen and (min-width: 40rem) {
+  .header {
+    margin-bottom: 3rem;
+  }
+
+  .title pre {
+    margin: 0;
+    font-size: 5px;
+  }
+
+  .page {
+    padding: 2rem 4.5rem;
+  }
+}
+
+@media screen and (min-width: 50rem) {
+  .title pre {
+    margin: 0;
+    font-size: 6px;
+  }
+}
+
+@media screen and (min-width: 60rem) {
+  .header {
+    margin-bottom: 3rem;
+  }
+
+  .title pre {
+    margin: 0;
+    font-size: 8px;
+  }
+}
+
+/* Accordion */
+.form-accordion {
   border: 1px solid silver;
   padding: 0.75rem;
   margin-top: 1rem;
-  margin-bottom: 1rem;
 }
 
-.form-advanced summary {
+.form-accordion summary {
   margin-bottom: 0.5rem;
 }
 
-.form-advanced summary:focus {
+.form-accordion summary:focus {
   border: 2px solid aqua;
   outline: none;
 }
 
-.field + .field {
-  margin-top: 1rem;
-}
-
-.field-label {
-  display: inline-block;
-  margin-bottom: 0.25rem;
-}
-
-.field-label abbr {
-  font-style: normal;
-  color: red;
-  margin-left: 0.125rem;
-}
-
-.field-label,
-.field-instructions {
-  font-size: 0.5rem;
-}
-
-.field-inner + .field-instructions {
-  margin-top: 0.75rem;
-}
-
-@keyframes spin {
-  0% {
-    content: "◡◡";
-  }
-
-  33.333% {
-    content: "⊙⊙";
-  }
-
-  66.666% {
-    content: "◠◠";
-  }
-}
-
+/* Actions */
 .form-actions {
   display: flex;
   flex-flow: row wrap;
@@ -271,22 +422,7 @@ body {
   margin-left: 1rem;
 }
 
-.spinner {
-  display: none;
-  font-size: 0.75rem;
-}
-
-.spinner.is-active {
-  display: inline-block;
-}
-
-.spinner::before {
-  content: "◡◡";
-  font-size: 1.5rem;
-  animation: spin 1s infinite linear;
-  margin-right: 0.25rem;
-}
-
+/* Output */
 .form-output {
   display: none;
   margin-top: 1rem;
@@ -301,114 +437,4 @@ body {
 
 .form-output.is-active {
   display: block;
-}
-
-@media screen and (min-width: 21.5rem) {
-  .title pre {
-    margin: 0;
-    font-size: 3px;
-  }
-}
-
-
-@media screen and (min-width: 40rem) {
-  body {
-    font-size: 1rem;
-    margin: 2rem 4.5rem;
-  }
-
-  .header {
-    margin-bottom: 3rem;
-  }
-
-  .title pre {
-    margin: 0;
-    font-size: 4px;
-  }
-
-  .field-label,
-  .field-instructions {
-    font-size: 0.75rem;
-  }
-}
-
-@media screen and (min-width: 60rem) {
-  .title pre {
-    margin: 0;
-    font-size: 8px;
-  }
-
-  .header {
-    margin-bottom: 4.5rem;
-  }
-}
-
-@keyframes textShadow {
-  0% {
-    text-shadow: 0.4389924193300864px 0 1px rgba(0,30,255,0.5), -0.4389924193300864px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-  }
-  5% {
-    text-shadow: 2.7928974010788217px 0 1px rgba(0,30,255,0.5), -2.7928974010788217px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-  }
-  10% {
-    text-shadow: 0.02956275843481219px 0 1px rgba(0,30,255,0.5), -0.02956275843481219px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-  }
-  15% {
-    text-shadow: 0.40218538552878136px 0 1px rgba(0,30,255,0.5), -0.40218538552878136px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-  }
-  20% {
-    text-shadow: 3.4794037899852017px 0 1px rgba(0,30,255,0.5), -3.4794037899852017px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-  }
-  25% {
-    text-shadow: 1.6125630401149584px 0 1px rgba(0,30,255,0.5), -1.6125630401149584px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-  }
-  30% {
-    text-shadow: 0.7015590085143956px 0 1px rgba(0,30,255,0.5), -0.7015590085143956px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-  }
-  35% {
-    text-shadow: 3.896914047650351px 0 1px rgba(0,30,255,0.5), -3.896914047650351px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-  }
-  40% {
-    text-shadow: 3.870905614848819px 0 1px rgba(0,30,255,0.5), -3.870905614848819px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-  }
-  45% {
-    text-shadow: 2.231056963361899px 0 1px rgba(0,30,255,0.5), -2.231056963361899px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-  }
-  50% {
-    text-shadow: 0.08084290417898504px 0 1px rgba(0,30,255,0.5), -0.08084290417898504px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-  }
-  55% {
-    text-shadow: 2.3758461067427543px 0 1px rgba(0,30,255,0.5), -2.3758461067427543px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-  }
-  60% {
-    text-shadow: 2.202193051050636px 0 1px rgba(0,30,255,0.5), -2.202193051050636px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-  }
-  65% {
-    text-shadow: 2.8638780614874975px 0 1px rgba(0,30,255,0.5), -2.8638780614874975px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-  }
-  70% {
-    text-shadow: 0.48874025155497314px 0 1px rgba(0,30,255,0.5), -0.48874025155497314px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-  }
-  75% {
-    text-shadow: 1.8948491305757957px 0 1px rgba(0,30,255,0.5), -1.8948491305757957px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-  }
-  80% {
-    text-shadow: 0.0833037308038857px 0 1px rgba(0,30,255,0.5), -0.0833037308038857px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-  }
-  85% {
-    text-shadow: 0.09769827255241735px 0 1px rgba(0,30,255,0.5), -0.09769827255241735px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-  }
-  90% {
-    text-shadow: 3.443339761481782px 0 1px rgba(0,30,255,0.5), -3.443339761481782px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-  }
-  95% {
-    text-shadow: 2.1841838852799786px 0 1px rgba(0,30,255,0.5), -2.1841838852799786px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-  }
-  100% {
-    text-shadow: 2.6208764473832513px 0 1px rgba(0,30,255,0.5), -2.6208764473832513px 0 1px rgba(255,0,80,0.3), 0 0 3px;
-  }
-}
-
-.crt {
-  animation: textShadow 2s infinite;
 }

@@ -1,13 +1,23 @@
 {% extends "layout.njk" %}
 
-{% macro selectfield(name, array) %}
+{% macro selectfield(name, array, attribute) %}
   <select name="{{name}}">
     {% for val in array %}
-      <option value="{{val.key}}" {% if val.isDefault %}selected{% endif %}>
+      <option value="{{val[attribute]}}" {% if val.isDefault %}selected{% endif %}>
         {{-val.description-}}
       </option>
     {% endfor %}
   </select>
+{% endmacro %}
+
+{% macro checkboxfield(name, label, checked) %}
+  <label class="field_checkbox-label checkbox">
+    <input name="{{name}}" type="checkbox" {% if checked %}checked{% endif %} />
+    <svg width="32" height="32" viewBox="-4 -4 39 39" aria-hidden="true" focusable="false">
+      <rect class="cb-bg" width="35" height="35" x="-2" y="-2" stroke="currentColor" fill="none" stroke-width="3" rx="1" ry="1"></rect>
+    </svg>
+    <span>{{label}}</span>
+  </label>
 {% endmacro %}
 
 {% block content %}
@@ -34,21 +44,17 @@
     <div class="field">
       <label class="field-label" for="language_code">Language<abbr>*</abbr></label>
       <div class="field-inner">
-        <select name="language_code">
-          {% for language in languages %}
-            <option value="{{language.code}}" {% if language.isDefault %}selected{% endif %}>{{language.description}}</option>
-          {% endfor %}
-        </select>
+        {{ selectfield("language_code", languages, "code") }}
       </div>
     </div>
 
-    <details class="form-advanced" open>
+    <details class="form-accordion" open>
       <summary>Speaker Diarization</summary>
 
-      <div class="field">
-        <label class="field-label" for="diarization">Enable (if language supported)</label>
-        <div class="field-inner">
-          <input type="checkbox" name="diarization" />
+      <div class="field field_checkbox">
+        {{ checkboxfield("diarization", "Enable (if language supported)", false) }}
+        <div class="field-instructions">
+          When enabled, output will be split by speaker. Individual passages will be prepended with [Speaker x] tags.
         </div>
       </div>
 
@@ -67,27 +73,27 @@
       </div>
     </details>
 
-    <details class="form-advanced">
+    <details class="form-accordion">
       <summary>Advanced Settings</summary>
 
       <div class="field">
         <label class="field-label" for="microphone_distance">Microphone Distance</label>
         <div class="field-inner">
-          {{ selectfield('microphone_distance', microphoneDistances) }}
+          {{ selectfield('microphone_distance', microphoneDistances, 'key') }}
         </div>
       </div>
 
       <div class="field">
         <label class="field-label" for="interaction_type">Interaction Type</label>
         <div class="field-inner">
-          {{ selectfield('interaction_type', interactionTypes) }}
+          {{ selectfield('interaction_type', interactionTypes, 'key') }}
         </div>
       </div>
 
       <div class="field">
         <label class="field-label" for="recording_device_type">Recording Device Type</label>
         <div class="field-inner">
-          {{ selectfield('recording_device_type', recordingDeviceTypes) }}
+          {{ selectfield('recording_device_type', recordingDeviceTypes, 'key') }}
         </div>
       </div>
 
@@ -99,28 +105,19 @@
       </div>
 
       <div class="field">
-        <label class="field-label" for="punctuation">Punctuation</label>
-        <div class="field-inner">
-          <input type="checkbox" name="punctuation" checked />
-        </div>
+        {{ checkboxfield("punctuation", "Enable Punctuation", true) }}
       </div>
 
       <div class="field">
-        <label class="field-label" for="profanity_filter">Profanity Filter</label>
-        <div class="field-inner">
-          <input type="checkbox" name="profanity_filter" />
-        </div>
+        {{ checkboxfield("profanity_filter", "Enable Profanity Filter", false) }}
       </div>
     </details>
 
-    <details class="form-advanced">
+    <details class="form-accordion">
       <summary>Output Settings</summary>
 
       <div class="field">
-        <label class="field-label" for="force_sub_at_zero">Force sub at 00:00:00?</label>
-        <div class="field-inner">
-          <input type="checkbox" name="force_sub_at_zero" />
-        </div>
+        {{ checkboxfield("force_sub_at_zero", "Force sub at 00:00:00", false) }}
         <div class="field-instructions">
          Enable this if you want to use the transcript in Adobe Premiere (and maybe other video editing software)
         </div>
@@ -136,7 +133,4 @@
       <div class="success"></div>
     </div>
   </form>
-  <footer class="footer">
-    <span>🤖 2020, Berlin</span>
-  </footer>
 {% endblock %}

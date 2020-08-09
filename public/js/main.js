@@ -123,7 +123,10 @@ class FormController {
   setFileLabel (name) {
     const fileLabel = this.el.get('fileLabel')
 
-    this.originalFileLabel = fileLabel.innerHTML
+    if (!this.originalFileLabel) {
+      this.originalFileLabel = fileLabel.innerHTML
+    }
+
     fileLabel.innerHTML = name
   }
 
