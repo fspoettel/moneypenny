@@ -43,42 +43,52 @@ const postTranscribe = (req, res, next) => {
   let uploadPromise
 
   busboy.on('field', (fieldname, value) => {
+    const parseInt = (value) => value ? Number.parseInt(value, 10) : undefined
+    const parseStr = (value) => value || undefined
+    const parseBool = (value) => value === 'on'
+    const parseArr = (value) => value
+      ? value.split(',').map(x => x.trim())
+      : undefined
+
     switch (fieldname) {
       case 'speaker_count':
-        params.speakerCount = Number.parseInt(value, 10)
+        params.speakerCount = parseInt(value)
         break
       case 'language_code':
-        params.languageCode = value
+        params.languageCode = parseStr(value)
         break
       case 'model':
-        params.model = value
+        params.model = parseStr(value)
         break
       case 'microphone_distance':
-        params.microphoneDistance = value
+        params.microphoneDistance = parseStr(value)
         break
       case 'profanity_filter':
-        params.profanityFilter = value === 'on'
+        params.profanityFilter = parseBool(value)
         break
       case 'diarization':
-        params.diarization = value === 'on'
+        params.diarization = parseBool(value)
         break
       case 'punctuation':
-        params.punctuation = value === 'on'
+        params.punctuation = parseBool(value)
         break
       case 'interaction_type':
-        params.interactionType = value
+        params.interactionType = parseStr(value)
         break
       case 'industry_code':
-        params.industryNaicsCodeOfAudio = value || undefined
+        params.industryNaicsCodeOfAudio = parseStr(value)
         break
       case 'recording_device_type':
-        params.recordingDeviceType = value
+        params.recordingDeviceType = parseStr(value)
         break
       case 'force_sub_at_zero':
-        params.forceSubAtZero = value === 'on'
+        params.forceSubAtZero = parseBool(value)
         break
       case 'transcript_format':
-        params.transcriptFormat = value
+        params.transcriptFormat = parseStr(value)
+        break
+      case 'phrases':
+        params.phrases = parseArr(value)
         break
       default:
         break

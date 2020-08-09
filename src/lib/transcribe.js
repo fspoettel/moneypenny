@@ -43,7 +43,10 @@ async function transcribe (gcsKey, params = {}) {
         originalMediaType: params.originalMediaType ?? getDefaultValue(ORIGINAL_MEDIA_TYPE),
         originalMimeType: params.originalMimeType,
         recordingDeviceType: params.recordingDeviceType ?? getDefaultValue(RECORDING_TYPE_DEVICE)
-      }
+      },
+      speechContexts: params.phrases
+        ? [{ phrases: params.phrases }]
+        : undefined
     },
     audio: { uri: `gs://${GOOGLE_BUCKET}/${gcsKey}` }
   }

@@ -87,7 +87,7 @@
       <div class="field">
         {{ checkboxfield("force_sub_at_zero", "Force sub at 00:00:00", false) }}
         <div class="field-instructions">
-         Enable this if you want to use the transcript in Adobe Premiere. (Maybe required in other video editing software as well)
+         Enable this if you want to use the transcript in Adobe Premiere. (May be required in other video editing software as well)
         </div>
       </div>
 
@@ -101,7 +101,7 @@
           </select>
         </div>
         <div class="field-instructions">
-          This tool outputs timestamped `.txt` files formatted as <a href="https://en.wikipedia.org/wiki/SubRip#Formatting" target="_blank">.srt subtitles</a>. You can choose whether sentences are split into <em>passages</em> (better for reading) or by <em>punctuation</em> (better for video subtitles).
+          This tool outputs timestamped `.txt` files formatted as <a href="https://en.wikipedia.org/wiki/SubRip#File_format" target="_blank">.srt subtitles</a>. You can choose whether sentences are split into <em>passages</em> (better for reading) or by <em>punctuation</em> (better for video subtitles).
         </div>
       </div>
     </details>
@@ -131,9 +131,22 @@
       </div>
 
       <div class="field">
+        <label class="field-label" for="phrases">Phrases &amp; Hints</label>
+        <div class="field-inner">
+          <textarea name="phrases" placeholder="special phrase, $MONTH"></textarea>
+        </div>
+        <div class="field-instructions">
+          A comma-separated list (,) of known words and phrases that are sent as hints to the speech recognition algorithm so that it is more likely to recognize them. You can also supply <a href="https://cloud.google.com/speech-to-text/docs/class-tokens" target="_blank">class tokens</a> (e.g. $MONTH) that encode concepts commonly found in natural language.
+        </div>
+      </div>
+
+      <div class="field">
         <label class="field-label" for="industry_code">NAICS Industry Code</label>
         <div class="field-inner">
-          <input type="text" name="industry_code" />
+          <input type="text" name="industry_code" placeholder="e.g. 811192 for Car Washes " />
+        </div>
+        <div class="field-instructions">
+          6-digit NAICS code for the industry that the speech recognition request applies to. Setting this can lead to better recognition results for industry-specific vocabulary. <a href="https://www.naics.com/search/." target="_blank">See here</a> for more information.
         </div>
       </div>
     </details>

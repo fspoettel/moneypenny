@@ -25,6 +25,7 @@ Array [
         },
         "model": "default",
         "profanityFilter": false,
+        "speechContexts": undefined,
         "useEnhanced": true,
       },
     },

@@ -94,7 +94,8 @@ select {
 
 input[type="text"],
 input[type="number"],
-input[type="password"] {
+input[type="password"],
+textarea {
   -moz-appearance: none;
   -webkit-appearance: none;
   appearance: none;
