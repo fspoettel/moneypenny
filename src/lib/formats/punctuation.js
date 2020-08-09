@@ -97,25 +97,26 @@ function encodeDiarizedResult ({ results }, forceSubAtZero) {
       const currentSpeaker = curr[0].speakerTag
 
       curr.forEach(({ word, startTime, endTime }, j) => {
+        const timeStart = fmtTime(startTime)
+        const isZeroSub = needsZeroSub(forceSubAtZero, i + j, timeStart)
         const isNewSentence = sentenceBuffer.length === 0
         const isLast = j === curr.length - 1
         const isEnd = /\.|\?|!/.test(word)
-        const isZeroSub = needsZeroSub(forceSubAtZero, i + j, startTime)
 
         sentenceBuffer.push(word)
 
         if (isZeroSub) {
           index += 1
-          content = `${addZeroSub(fmtTime(startTime))}`
+          content = `${addZeroSub(timeStart)}`
         }
 
         if (isNewSentence && !isLast) {
           index += 1
-          content = `${content}${index}\n${fmtTime(startTime)} --> `
+          content = `${content}${index}\n${timeStart} --> `
         } else if (isEnd || isLast) {
           if (isNewSentence) {
             index += 1
-            content = `${content}${index}\n${fmtTime(startTime)} --> `
+            content = `${content}${index}\n${timeStart} --> `
           }
           content = `${content}${fmtTime(endTime)}\n[Speaker ${currentSpeaker}] ${sentenceBuffer.join(' ')}\n\n`
           sentenceBuffer = []

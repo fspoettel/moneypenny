@@ -87,17 +87,18 @@ function encodeDiarizedResult ({ results }, forceSubAtZero) {
 
       // When `forceSubAtZero` is set, we need to prepend an empty sub ranging from 0 to startTime
       // and adjust indezes
-      const isZeroSub = needsZeroSub(forceSubAtZero, i, curr.startTime)
+      const timeStart = fmtTime(curr.startTime)
+      const isZeroSub = needsZeroSub(forceSubAtZero, i, timeStart)
       const currentIndex = isZeroSub ? index + 1 : index
 
       const prevToken = `${content}${fmtTime(lastEndTime)}\n${passage}`
-      const nextToken = `${currentIndex}\n${fmtTime(curr.startTime)} --> `
+      const nextToken = `${currentIndex}\n${timeStart} --> `
 
       let nextContent
 
       if (i === 0) {
         nextContent = isZeroSub
-          ? `${addZeroSub(fmtTime(curr.startTime))}${nextToken}`
+          ? `${addZeroSub(timeStart)}${nextToken}`
           : nextToken
       } else if (i === arr.length - 1) {
         nextContent = prevToken
