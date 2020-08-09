@@ -33,7 +33,7 @@ function encodeResult ({ results }, forceSubAtZero) {
         return {
           ...acc,
           sentenceBuffer: [],
-          text: `${content} --> ${timeEnd}\n${sentenceBuffer.join(' ')}\n\n`
+          content: `${content} --> ${timeEnd}\n${sentenceBuffer.join(' ')}\n\n`
         }
       }
 
@@ -46,7 +46,7 @@ function encodeResult ({ results }, forceSubAtZero) {
         return {
           index: nextIndex,
           sentenceBuffer,
-          text: isZeroSub
+          content: isZeroSub
             ? `${addZeroSub(timeStart)}${passage}`
             : `${content}${passage}`
         }
