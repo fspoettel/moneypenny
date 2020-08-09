@@ -76,7 +76,8 @@ function encodeDiarizedResult ({ results }, forceSubAtZero) {
 
       const hasSpeakerChanged = lastSpeakerTag !== speakerTag
 
-      if (!hasSpeakerChanged) {
+      // Guard against diarized results that never change speaker
+      if (!hasSpeakerChanged && i < words.length - 1) {
         return {
           ...nextAcc,
           index: index,
