@@ -1,4 +1,4 @@
-const { fmtTime, getDefaultValue } = require('../helpers')
+const { fmtTime, getDefaultValue, normalizeEmail } = require('../helpers')
 const { MICROPHONE_DISTANCE } = require('../../constants')
 
 describe('fmtTime()', () => {
@@ -19,6 +19,16 @@ describe('fmtTime()', () => {
   it('formats values in the hours range', () => {
     expect(fmtTime({ seconds: 65 * 60 + 45, nanos: 400 * 1e+6 }))
       .toEqual('01:05:45,400')
+  })
+})
+
+describe('normalizeEmail()', () => {
+  it('lowercases emails', () => {
+    expect(normalizeEmail('Felix@cyber.space')).toEqual('felix@cyber.space')
+  })
+
+  it('trims whitespace in email', () => {
+    expect(normalizeEmail('  felix@cyber.space ')).toEqual('felix@cyber.space')
   })
 })
 
