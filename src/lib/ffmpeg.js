@@ -21,9 +21,9 @@ async function getAudioSampleRate (filepath) {
   return audioStreams[0].sample_rate
 }
 
-function flacEncoder (inputStream, sampleRate) {
+function flacEncoder (input, sampleRate) {
   const encoder = ffmpeg()
-    .input(inputStream)
+    .input(input)
     .noVideo()
     .audioChannels(1)
     .format('flac')

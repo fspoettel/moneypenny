@@ -1,4 +1,3 @@
-const fs = require('fs')
 const os = require('os')
 const path = require('path')
 const Busboy = require('busboy')
@@ -157,9 +156,7 @@ const postTranscribe = (req, res, next) => {
 
     const { writeStream, promise: gcsPromise } = gcsUploadStream(`${basename}.flac`)
     debug(`Starting encode and upload to GCS for ${basename}`)
-
-    const readStream = fs.createReadStream(tmpPath)
-    flacEncoder(readStream, sampleRate).pipe(writeStream)
+    flacEncoder(tmpPath, sampleRate).pipe(writeStream)
 
     try {
       const gcsUri = await gcsPromise

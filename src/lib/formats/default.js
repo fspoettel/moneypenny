@@ -53,6 +53,8 @@ function encodeResult ({ results }, forceSubAtZero) {
 }
 
 function encodeDiarizedResult ({ results }, forceSubAtZero) {
+  if (results.length === 0) return ''
+
   const lastResult = results[results.length - 1]
   const { words } = lastResult.alternatives[0]
 
