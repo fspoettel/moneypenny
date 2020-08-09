@@ -51,11 +51,21 @@ class FormController {
       const form = this.el.get('form')
       const response = await postTranscribe(new FormData(form))
 
+      let audio
+
+      try {
+        audio = new Audio('/static/yougotmail.mp3')
+        audio.preload = true
+        audio.volume = 0.25
+      } catch (err) {
+        console.error(err)
+      }
+
       // TODO: this might fail, add manual way to download
       await download(response)
-
       this.resetPostState()
       this.resetForm()
+      if (audio) audio.play()
     } catch (err) {
       let errMessage = 'Internal Server Error'
 
