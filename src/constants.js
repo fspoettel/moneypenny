@@ -5,6 +5,18 @@ class LimitError extends Error {}
 
 class UnauthenticatedError extends Error {}
 
+const FORMATS = {
+  DEFAULT: {
+    isDefault: true,
+    description: 'Split by passages',
+    key: 'DEFAULT'
+  },
+  PUNCTUATION: {
+    description: 'Split by punctuation',
+    key: 'PUNCTUATION'
+  }
+}
+
 const INTERACTION_TYPE = {
   INTERACTION_TYPE_UNSPECIFIED: {
     description: 'Unknown or other',
@@ -1112,6 +1124,7 @@ module.exports = {
   LimitError,
   UnauthenticatedError,
   ValidationError,
+  FORMATS,
   INTERACTION_TYPE,
   LANGUAGES,
   LANGUAGE_ARRAY,

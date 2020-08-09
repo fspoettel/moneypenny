@@ -77,6 +77,9 @@ const postTranscribe = (req, res, next) => {
       case 'force_sub_at_zero':
         params.forceSubAtZero = value === 'on'
         break
+      case 'transcript_format':
+        params.transcriptFormat = value
+        break
       default:
         break
     }
