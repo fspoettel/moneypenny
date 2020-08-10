@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`POST /transcribe when logged in when a valid file is uploaded calls processing modules with correct params 1`] = `
+Array [
+  Array [
+    "1597083792000-yougotmail.flac",
+    Object {
+      "diarization": true,
+      "forceSubAtZero": true,
+      "languageCode": "en-US",
+      "originalMediaType": "AUDIO",
+      "originalMimeType": "audio/mpeg",
+      "phrases": Array [
+        "foo",
+        "bar",
+      ],
+      "punctuation": true,
+      "speakerCount": 2,
+    },
+  ],
+]
+`;
