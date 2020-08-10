@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`transcribe() always calls recognize() with a set of default params 1`] = `
+exports[`transcribe() calls recognize() with a set of default params 1`] = `
 Array [
   Array [
     Object {

@@ -29,23 +29,23 @@ function selectUserById (id) {
   ))
 }
 
-passport.use(new LocalStrategy(
-  async function (username, password, done) {
-    try {
-      const user = await selectUserByEmail(normalizeEmail(username))
-      if (!user) return done(null, false)
+async function verifyUser (username, password, done) {
+  try {
+    const user = await selectUserByEmail(normalizeEmail(username))
+    if (!user) return done(null, false)
 
-      const match = await bcrypt.compare(password, user.password)
-      if (!match) return done(null, false)
+    const match = await bcrypt.compare(password, user.password)
+    if (!match) return done(null, false)
 
-      const sessionUser = { ...user }
-      delete sessionUser.password
-      return done(null, sessionUser)
-    } catch (err) {
-      return done(err)
-    }
+    const sessionUser = { ...user }
+    delete sessionUser.password
+    return done(null, sessionUser)
+  } catch (err) {
+    return done(err)
   }
-))
+}
+
+passport.use(new LocalStrategy(verifyUser))
 
 passport.serializeUser(function (user, done) {
   done(null, user.id)
@@ -60,7 +60,10 @@ passport.deserializeUser(async function (id, done) {
   }
 })
 
-module.exports = [
-  passport.initialize(),
-  passport.session()
-]
+module.exports = {
+  verifyUser,
+  middlewares: [
+    passport.initialize(),
+    passport.session()
+  ]
+}

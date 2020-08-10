@@ -33,14 +33,17 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "jest": "^26.2.2",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "redis-mock": "^0.50.0",
+    "supertest": "^4.0.2"
   },
   "scripts": {
     "add-user": "node ./scripts/addUser",
     "dev": "nodemon index",
     "start": "NODE_ENV=production node index",
     "lint": "eslint .",
-    "test": "jest",
+    "test": "NODE_ENV=test jest",
+    "test:ci": "NODE_ENV=test jest --collectCoverage",
     "db:create": "sudo -u postgres psql -d moneypenny -a -f src/db/pg/create.sql",
     "inspect": "node --inspect index"
   },

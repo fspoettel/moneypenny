@@ -23,13 +23,7 @@ function normalizeEmail (str) {
   return str.trim().toLowerCase()
 }
 
-const asyncHandler = (callback) =>
-  (req, res, next) => {
-    callback(req, res, next).catch(next)
-  }
-
 module.exports = {
-  asyncHandler,
   fmtTime,
   getDefaultValue,
   normalizeEmail

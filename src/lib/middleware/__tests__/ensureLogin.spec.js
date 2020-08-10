@@ -8,7 +8,7 @@ const mockNext = jest.fn()
 describe('ensureLogin()', () => {
   beforeEach(() => { jest.clearAllMocks() })
 
-  it('calls next() if request is authenticated', () => {
+  it('does nothing if user is authenticated', () => {
     ensureLogin(mockReq, mockRes, mockNext)
     expect(mockNext).toBeCalledWith()
   })
@@ -24,7 +24,7 @@ describe('ensureLogin()', () => {
 describe('ensureLoginApi()', () => {
   beforeEach(() => { jest.clearAllMocks() })
 
-  it('calls next() if request is authenticated', () => {
+  it('does nothing if user is authenticated', () => {
     ensureLoginApi(mockReq, mockRes, mockNext)
     expect(mockNext).toBeCalledWith()
   })

@@ -15,7 +15,7 @@ const redisClient = require('./db/redis')
 const errorHandler = require('./lib/middleware/errorHandler')
 const disableCache = require('./lib/middleware/disableCache')
 const { ensureLogin, ensureLoginApi } = require('./lib/middleware/ensureLogin')
-const authMiddlewares = require('./lib/middleware/auth')
+const { middlewares: authMiddlewares } = require('./lib/middleware/auth')
 
 const { NODE_ENV, PORT, SESSION_SECRET } = process.env
 

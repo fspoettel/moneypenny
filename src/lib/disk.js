@@ -4,24 +4,17 @@ const debug = require('debug')('app:disk')
 
 const removeTempFile = (path) => {
   debug(`Removing file: ${path}`)
-  fs.promises.unlink(path)
+  return fs.promises.unlink(path)
     .then(() => { debug(`Removed file: ${path}`) })
-    .catch((err) => {
-      console.error(err)
-    })
+    .catch((err) => { debug(err) })
 }
 
 const writeTempFile = (filepath) => {
   const write = fs.createWriteStream(filepath)
 
   const promise = new Promise((resolve, reject) => {
-    write.on('end', () => {
+    write.on('finish', () => {
       debug(`Ended write for ${filepath}`)
-      return resolve()
-    })
-
-    write.on('close', () => {
-      debug(`Closed write for ${filepath}`)
       return resolve()
     })
 

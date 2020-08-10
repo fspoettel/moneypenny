@@ -5,6 +5,7 @@ const minimist = require('minimist')
 const pool = require('../src/db/pg')
 
 const { normalizeEmail } = require('../src/lib/helpers');
+
 (async () => {
   const argv = minimist(process.argv.slice(2))
 

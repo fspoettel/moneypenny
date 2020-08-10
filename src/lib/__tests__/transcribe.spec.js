@@ -16,17 +16,15 @@ describe('transcribe()', () => {
     jest.clearAllMocks()
   })
 
-  describe('always', () => {
-    it('calls recognize() with a set of default params', async () => {
-      await transcribe(gcsKey)
-      expect(recognize).toBeCalledTimes(1)
-      expect(recognize.mock.calls).toMatchSnapshot()
-    })
+  it('calls recognize() with a set of default params', async () => {
+    await transcribe(gcsKey)
+    expect(recognize).toBeCalledTimes(1)
+    expect(recognize.mock.calls).toMatchSnapshot()
+  })
 
-    it('throws error if recognize() fails', () => {
-      recognize.mockImplementationOnce(() => Promise.reject(new TypeError('recognize failed')))
-      return expect(transcribe(gcsKey)).rejects.toBeInstanceOf(TypeError)
-    })
+  it('throws error if recognize() fails', () => {
+    recognize.mockImplementationOnce(() => Promise.reject(new TypeError('recognize failed')))
+    return expect(transcribe(gcsKey)).rejects.toBeInstanceOf(TypeError)
   })
 
   describe('when params.diarization is false', () => {
