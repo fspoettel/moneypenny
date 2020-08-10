@@ -1,4 +1,12 @@
-# moneypenny
+# `moneypenny`
+
+<div align="left">
+  <img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/fspoettel/moneypenny/Node.js%20CI" />
+
+  <a href="https://codecov.io/gh/fspoettel/moneypenny">
+    <img src="https://codecov.io/gh/fspoettel/moneypenny/branch/master/graph/badge.svg" />
+  </a>
+</div>
 
 > Automatic transcription tool built around the Google Speech-To-Text API. It turns audio/video files into timestamped, `.srt`-formatted transcripts and has support for speaker separation and automatic punctuation.
 
