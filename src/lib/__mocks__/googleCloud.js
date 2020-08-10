@@ -7,7 +7,7 @@ const recognize = jest.fn((config) => {
   return fsPromises.readFile(
     path.join(
       process.cwd(),
-      '__recordings__',
+      '__fixtures__',
       `sample-response${shouldDiarize ? '-diarize' : ''}.json`
     )
   )

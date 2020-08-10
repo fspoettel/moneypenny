@@ -2,11 +2,11 @@ const fsPromises = require('fs/promises')
 const path = require('path')
 
 const getMockResult = () =>
-  fsPromises.readFile(path.join(process.cwd(), '__recordings__', 'sample-response.json'))
+  fsPromises.readFile(path.join(process.cwd(), '__fixtures__', 'sample-response.json'))
     .then(file => JSON.parse(file))
 
 const getMockDiarizedResult = () =>
-  fsPromises.readFile(path.join(process.cwd(), '__recordings__', 'sample-response-diarize.json'))
+  fsPromises.readFile(path.join(process.cwd(), '__fixtures__', 'sample-response-diarize.json'))
     .then(file => JSON.parse(file))
 
 const TRANSCRIPT_FIXTURES = {
