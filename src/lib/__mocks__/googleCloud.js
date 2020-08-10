@@ -1,5 +1,6 @@
 const path = require('path')
 const fsPromises = require('fs/promises')
+const { PassThrough } = require('stream')
 
 const recognize = jest.fn((config) => {
   const shouldDiarize = config.config.diarizationConfig?.enableSpeakerDiarization
@@ -14,4 +15,11 @@ const recognize = jest.fn((config) => {
     .then((file) => JSON.parse(file))
 })
 
-module.exports = { recognize }
+const gcsUploadStream = jest.fn((gcsKey) => ({
+  writeStream: new PassThrough(),
+  promise: Promise.resolve(gcsKey)
+}))
+
+const removeObject = jest.fn(() => Promise.resolve())
+
+module.exports = { gcsUploadStream, removeObject, recognize }

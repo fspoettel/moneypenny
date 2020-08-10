@@ -36,6 +36,8 @@ const postTranscribe = (req, res, next) => {
 
   const params = {}
 
+  let hasFile = false
+  let hasValidationError = false
   let basename
   let originalName
   let tmpPath
@@ -95,11 +97,13 @@ const postTranscribe = (req, res, next) => {
   })
 
   busboy.on('file', async (fieldname, file, filename) => {
+    hasFile = true
     let fileStream
 
     try {
       fileStream = await FileType.stream(file)
     } catch (err) {
+      hasValidationError = true
       return file.resume()
     }
 
@@ -113,15 +117,17 @@ const postTranscribe = (req, res, next) => {
     })
 
     const { fileType } = fileStream
-    if (!fileType.mime.startsWith('audio') && !fileType.mime.startsWith('video')) {
+
+    if (!fileType?.mime.startsWith('audio') && !fileType?.mime.startsWith('video')) {
+      hasValidationError = true
       return file.resume()
     }
+
+    debug(`Starting upload for file: ${basename}`)
 
     originalName = path.basename(filename, path.extname(filename))
     basename = `${Date.now()}-${originalName}`
     tmpPath = path.join(tmp, `${basename}.${fileType.ext}`)
-
-    debug(`Starting upload for file: ${basename}`)
 
     params.originalMimeType = fileType.mime
     params.originalMediaType = fileType.mime.startsWith('audio')
@@ -136,7 +142,7 @@ const postTranscribe = (req, res, next) => {
 
   busboy.on('finish', async () => {
     debug('Finished parsing form data')
-    if (uploadPromise == null) return onError(new ValidationError('Error while processing file.'))
+    if (!hasFile || hasValidationError) return onError(new ValidationError('Error while processing file.'))
 
     try {
       await uploadPromise
