@@ -75,9 +75,10 @@ function encodeDiarizedResult ({ results }, forceSubAtZero) {
       }
 
       const hasSpeakerChanged = lastSpeakerTag !== speakerTag
+      const isLast = i === arr.length - 1
 
       // Guard against diarized results that never change speaker
-      if (!hasSpeakerChanged && i < words.length - 1) {
+      if (!hasSpeakerChanged && !isLast) {
         return {
           ...nextAcc,
           index: index,
@@ -95,15 +96,25 @@ function encodeDiarizedResult ({ results }, forceSubAtZero) {
       const prevToken = `${content}${fmtTime(lastEndTime)}\n${passage}`
       const nextToken = `${currentIndex}\n${timeStart} --> `
 
-      let nextContent
+      let nextContent = ''
+
+      const nextPassage = `[Speaker ${speakerTag}] ${word}`
 
       if (i === 0) {
         nextContent = isZeroSub
           ? `${addZeroSub(timeStart)}${nextToken}`
           : nextToken
-      } else if (i === arr.length - 1) {
-        nextContent = prevToken
-      } else {
+      }
+
+      if (isLast && arr.length === 1) {
+        const timeEnd = fmtTime(curr.endTime)
+        nextContent = `${nextContent}${timeEnd}\n${nextPassage}`
+      } else if (isLast && !hasSpeakerChanged) {
+        const timeEnd = fmtTime(curr.endTime)
+        nextContent = `${content}${timeEnd}\n${passage} ${word}`
+      } else if (isLast) {
+        nextContent = `${prevToken} ${word}`
+      } else if (i > 0) {
         nextContent = `${prevToken}\n\n${nextToken}`
       }
 
@@ -111,7 +122,7 @@ function encodeDiarizedResult ({ results }, forceSubAtZero) {
         ...nextAcc,
         index: currentIndex + 1,
         content: nextContent,
-        passage: `[Speaker ${speakerTag}] ${word}`
+        passage: nextPassage
       }
     }, {
       passage: '',

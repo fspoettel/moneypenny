@@ -1,14 +1,19 @@
 const { transcribe } = require('../transcribe')
 const { recognize } = require('../googleCloud')
 const { FORMATS } = require('../../constants')
+const punctuationFormat = require('../formats/punctuation')
+const defaultFormat = require('../formats/default')
 
 jest.mock('../googleCloud')
+
+jest.mock('../formats/default')
+jest.mock('../formats/punctuation')
 
 describe('transcribe()', () => {
   const gcsKey = 'sample-key'
 
   beforeEach(() => {
-    recognize.mockClear()
+    jest.clearAllMocks()
   })
 
   describe('always', () => {
@@ -25,72 +30,34 @@ describe('transcribe()', () => {
   })
 
   describe('when params.diarization is false', () => {
-    describe('when params.forceZeroSub is false', () => {
-      it('parses recognize() response to an undiarized .srt', async () => {
-        const result = await transcribe(gcsKey, { diarization: false, forceSubAtZero: false })
-        expect(result).toMatchSnapshot()
-      })
-
-      it('parses recognize() response to an undiarized .srt in punctuation format', async () => {
-        const result = await transcribe(gcsKey, {
-          diarization: false,
-          forceSubAtZero: false,
-          transcriptFormat: FORMATS.PUNCTUATION.key
-        })
-        expect(result).toMatchSnapshot()
-      })
+    it('calls defaultFormatter.encodeResult with result', async () => {
+      await transcribe(gcsKey, { diarization: false })
+      expect(defaultFormat.encodeResult).toBeCalled()
     })
 
-    describe('when params.forceZeroSub is true', () => {
-      it('parses recognize() response to an undiarized .srt string and forces a zero sub', async () => {
-        const result = await transcribe(gcsKey, { diarization: false, forceSubAtZero: true })
-        expect(result).toMatchSnapshot()
+    it('calls punctuationFormatter.encodeResult with result if params.transcriptForamt is set to PUNCTUATION', async () => {
+      await transcribe(gcsKey, {
+        diarization: false,
+        transcriptFormat: FORMATS.PUNCTUATION.key
       })
 
-      it('parses recognize() response to an undiarized .srt string in punctuation format and forces a zero sub', async () => {
-        const result = await transcribe(gcsKey, {
-          diarization: false,
-          forceSubAtZero: true,
-          transcriptFormat: FORMATS.PUNCTUATION.key
-        })
-
-        expect(result).toMatchSnapshot()
-      })
+      expect(punctuationFormat.encodeResult).toBeCalled()
     })
   })
 
   describe('when params.diarization is true', () => {
-    describe('when params.forceZeroSub is false', () => {
-      it('parses diarized recognize() response to a diarized .srt', async () => {
-        const result = await transcribe(gcsKey, { diarization: true, forceZeroSub: false })
-        expect(result).toMatchSnapshot()
-      })
-
-      it('parses recognize() response to a diarized.srt in punctuation format', async () => {
-        const result = await transcribe(gcsKey, {
-          diarization: true,
-          forceSubAtZero: false,
-          transcriptFormat: FORMATS.PUNCTUATION.key
-        })
-
-        expect(result).toMatchSnapshot()
-      })
-    })
-  })
-
-  describe('when params.forceZeroSub is true', () => {
-    it('parses recognize() response to a diarized .srt and forces a zero sub', async () => {
-      const result = await transcribe(gcsKey, { diarization: true, forceSubAtZero: true })
-      expect(result).toMatchSnapshot()
+    it('calls defaultFormatter.encodeDiarizedResult with result', async () => {
+      await transcribe(gcsKey, { diarization: true })
+      expect(defaultFormat.encodeDiarizedResult).toBeCalled()
     })
 
-    it('parses recognize() response to a .srt string and forces zero sub in punctuation format and forces a zero sub', async () => {
-      const result = await transcribe(gcsKey, {
-        transcriptFormat: FORMATS.PUNCTUATION.key,
+    it('calls punctuationFormatter.encodeResult with result if params.transcriptForamt is set to PUNCTUATION', async () => {
+      await transcribe(gcsKey, {
         diarization: true,
-        forceSubAtZero: true
+        transcriptFormat: FORMATS.PUNCTUATION.key
       })
-      expect(result).toMatchSnapshot()
+
+      expect(punctuationFormat.encodeDiarizedResult).toBeCalled()
     })
   })
 })
