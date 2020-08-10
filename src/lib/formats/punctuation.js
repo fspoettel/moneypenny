@@ -121,7 +121,7 @@ function encodeDiarizedResult ({ results }, forceSubAtZero) {
             content = `${content}${index}\n${timeStart} --> `
           }
           content = `${content}${fmtTime(endTime)}\n[Speaker ${currentSpeaker}] ${sentenceBuffer.join(' ')}`
-          if (!isLastSentence) content = `${content}\n\n`
+          if (!isLastSentence || !isLastWord) content = `${content}\n\n`
           sentenceBuffer = []
         }
       })
