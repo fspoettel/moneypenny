@@ -7,6 +7,7 @@ const { makeApp } = require('../../app')
 const { gcsUploadStream, removeObject } = require('../../lib/googleCloud')
 const { getAudioSampleRate, flacEncoder } = require('../../lib/ffmpeg')
 const { transcribe } = require('../../lib/transcribe')
+const { INTERACTION_TYPE, RECORDING_TYPE_DEVICE, FORMATS, MICROPHONE_DISTANCE } = require('../../constants')
 
 Date.now = jest.fn(() => 1597083792000)
 
@@ -123,7 +124,13 @@ describe('POST /transcribe', () => {
           .field('speaker_count', '2')
           .field('diarization', 'on')
           .field('punctuation', 'on')
+          .field('profanity_filter', 'on')
           .field('force_sub_at_zero', 'on')
+          .field('industry_code', '61231')
+          .field('microphone_distance', MICROPHONE_DISTANCE.NEARFIELD.key)
+          .field('interaction_type', INTERACTION_TYPE.INTERACTION_TYPE_UNSPECIFIED.key)
+          .field('recording_type_device', RECORDING_TYPE_DEVICE.RECORDING_DEVICE_TYPE_UNSPECIFIED.key)
+          .field('transcript_format', FORMATS.PUNCTUATION.key)
           .field('phrases', 'foo,bar')
           .end((err, res) => {
             if (err) return done(err)

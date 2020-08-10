@@ -7,15 +7,20 @@ Array [
     Object {
       "diarization": true,
       "forceSubAtZero": true,
+      "industryNaicsCodeOfAudio": "61231",
+      "interactionType": "INTERACTION_TYPE_UNSPECIFIED",
       "languageCode": "en-US",
+      "microphoneDistance": "NEARFIELD",
       "originalMediaType": "AUDIO",
       "originalMimeType": "audio/mpeg",
       "phrases": Array [
         "foo",
         "bar",
       ],
+      "profanityFilter": true,
       "punctuation": true,
       "speakerCount": 2,
+      "transcriptFormat": "PUNCTUATION",
     },
   ],
 ]
