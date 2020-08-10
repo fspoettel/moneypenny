@@ -44,7 +44,7 @@
     "start": "NODE_ENV=production node index",
     "lint": "eslint .",
     "test": "NODE_ENV=test jest",
-    "test:ci": "NODE_ENV=test jest --collectCoverage",
+    "test:ci": "NODE_ENV=test jest --verbose --collectCoverage",
     "db:create": "sudo -u postgres psql -d moneypenny -a -f src/db/pg/create.sql",
     "inspect": "node --inspect index"
   },

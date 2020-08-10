@@ -3,7 +3,7 @@ const Ffmpeg = require('fluent-ffmpeg')
 jest.mock('fluent-ffmpeg')
 
 describe('ffmpeg', () => {
-  describe('getAudioSampleRate ()', () => {
+  describe('getAudioSampleRate()', () => {
     it('returns the sample_rate of the first audio stream', async () => {
       const result = await getAudioSampleRate('sample-path')
       expect(result).toEqual(44100)
