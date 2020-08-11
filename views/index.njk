@@ -21,15 +21,24 @@
 {% endmacro %}
 
 {% block content %}
-  <form class="form" method="POST" action="/transcribe" id="transcribe-form" enctype="multipart/form-data">
+  <form
+    method="POST"
+    action="/transcribe"
+    enctype="multipart/form-data"
+    class="form"
+    data-controller="form"
+    data-action="form#onFormSubmit"
+    data-form-limit="{{limitMb}}" 
+  >
     <div class="field field_file">
       <div class="field-inner file">
-        <label id="file-label" class="button file-label" for="file">
+        <label data-target="form.fileLabel" class="button file-label" for="file">
           Pick a file
         </label>
         <input
           accept="audio/*,video/*"
-          data-limit="{{limitMb}}"
+          data-target="form.file"
+          data-action="form#onFileChange"
           type="file"
           name="file"
           id="file"
@@ -152,12 +161,9 @@
     </details>
 
     <div class="form-actions">
-      <button id="submit-btn" type="submit">Transcribe</button>
-      <div class="spinner">Hang tight, this might take a long time</div>
+      <button data-target="form.submit" type="submit">Transcribe</button>
+      <div data-target="form.spinner" class="spinner">Hang tight, this might take a long time</div>
     </div>
-    <div class="form-output">
-      <div class="error"></div>
-      <div class="success"></div>
-    </div>
+    <div data-target="form.error" class="form-error"></div>
   </form>
 {% endblock %}

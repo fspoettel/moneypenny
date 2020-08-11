@@ -1,3 +1,9 @@
+@font-face {
+  font-family: 'Acer710';
+  src: url('./fonts/Web_Acer710_CGA.woff') format('woff');
+  font-display: block;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -7,12 +13,6 @@ body {
 }
 
 /* Tyopgraphy */
-@font-face {
-  font-family: 'Acer710';
-  src: url('./fonts/Web_Acer710_CGA.woff') format('woff');
-  font-display: block;
-}
-
 body,
 html,
 input,
@@ -336,7 +336,6 @@ select[aria-disabled=true] {
 /* Header */
 .title {
   margin-bottom: 1rem;
-  overflow-x: auto;
 }
 
 .title a {
@@ -424,27 +423,23 @@ select[aria-disabled=true] {
 }
 
 /* Output */
-.form-output {
+.form-error {
   display: none;
   margin-top: 1rem;
-}
-
-.form-output .error {
   background: red;
   color: #fff;
   padding: 3px;
-
 }
 
-.form-output.is-active {
+.form-error.active {
   display: block;
 }
 
 /* Animations */
-.ascii-animation > * {
+[data-controller="logo"] > * {
   display: none;
 }
 
-.ascii-animation > .active {
+[data-controller="logo"] > .active {
   display: block;
 }
