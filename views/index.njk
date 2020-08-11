@@ -21,145 +21,156 @@
 {% endmacro %}
 
 {% block content %}
-  <form
-    method="POST"
-    action="/transcribe"
-    enctype="multipart/form-data"
-    class="form"
-    data-controller="form"
-    data-action="form#onFormSubmit"
-    data-form-limit="{{limitMb}}" 
-  >
-    <div class="field field_file">
-      <div class="field-inner file">
-        <label data-target="form.fileLabel" class="button file-label" for="file">
-          Pick a file
-        </label>
-        <input
-          accept="audio/*,video/*"
-          data-target="form.file"
-          data-action="form#onFileChange"
-          type="file"
-          name="file"
-          id="file"
-          required
-        />
-      </div>
-      <div class="field-instructions">
-        Max. upload size is {{limitMb}}mb. Most audio and video formats are supported
-      </div>
-    </div>
-    <div class="field">
-      <label class="field-label" for="language_code">Language<abbr>*</abbr></label>
-      <div class="field-inner">
-        {{ selectfield("language_code", languages, "code") }}
-      </div>
-    </div>
-
-    <details class="form-accordion" open>
-      <summary>Speaker Diarization</summary>
-
-      <div class="field field_checkbox">
-        {{ checkboxfield("diarization", "Enable", false) }}
-        <div class="field-instructions">
-          When enabled, output will be split by speaker. Individual passages will be prepended with [Speaker x] tags. Only supported for some languages.
-        </div>
-      </div>
-
-      <div class="field">
-        <label class="field-label" for="speaker_count">Speaker Count</label>
-        <div class="field-inner">
+  <div class="transcripts-container" data-controller="transcripts" data-action="form-finish->transcripts#onNewTranscript">
+    <form
+      method="POST"
+      action="/transcribe"
+      enctype="multipart/form-data"
+      class="form"
+      data-controller="form"
+      data-action="form#onFormSubmit"
+      data-form-limit="{{limitMb}}" 
+    >
+      <div class="field field_file">
+        <div class="field-inner file">
+          <label data-target="form.fileLabel" class="button file-label" for="file">
+            Pick a file
+          </label>
           <input
-            id="speaker_count"
-            type="number"
-            name="speaker_count"
+            accept="audio/*,video/*"
+            data-target="form.file"
+            data-action="form#onFileChange"
+            type="file"
+            name="file"
+            id="file"
             required
-            value="2"
-            min="1"
-            max="15"
           />
         </div>
-      </div>
-    </details>
-
-    <details class="form-accordion" open>
-      <summary>Output Settings</summary>
-
-      <div class="field">
-        {{ checkboxfield("punctuation", "Enable punctuation", true) }}
-      </div>
-
-      <div class="field">
-        {{ checkboxfield("profanity_filter", "Enable profanity filter", false) }}
-      </div>
-
-      <div class="field">
-        {{ checkboxfield("force_sub_at_zero", "Force sub at 00:00:00", false) }}
         <div class="field-instructions">
-         Enable this if you want to use the transcript in Adobe Premiere. (May be required in other video editing software as well)
+          Max. upload size is {{limitMb}}mb. Most audio and video formats are supported
         </div>
       </div>
-
       <div class="field">
-        <label class="field-label" for="transcript_format">Transcript Format</label>
+        <label class="field-label" for="language_code">Language<abbr>*</abbr></label>
         <div class="field-inner">
-          {{ selectfield('transcript_format', formats, 'key') }}
-        </div>
-        <div class="field-instructions">
-          This tool outputs timestamped `.txt` files formatted as <a href="https://en.wikipedia.org/wiki/SubRip#File_format" target="_blank">.srt subtitles</a>. You can choose whether sentences are split into <em>passages</em> (better for reading) or by <em>punctuation</em> (better for video subtitles).
-        </div>
-      </div>
-    </details>
-
-    <details class="form-accordion">
-      <summary>Advanced Settings</summary>
-
-      <div class="field">
-        <label class="field-label" for="microphone_distance">Microphone Distance</label>
-        <div class="field-inner">
-          {{ selectfield('microphone_distance', microphoneDistances, 'key') }}
+          {{ selectfield("language_code", languages, "code") }}
         </div>
       </div>
 
-      <div class="field">
-        <label class="field-label" for="interaction_type">Interaction Type</label>
-        <div class="field-inner">
-          {{ selectfield('interaction_type', interactionTypes, 'key') }}
-        </div>
-      </div>
+      <details class="form-accordion" open>
+        <summary>Speaker Diarization</summary>
 
-      <div class="field">
-        <label class="field-label" for="recording_device_type">Recording Device Type</label>
-        <div class="field-inner">
-          {{ selectfield('recording_device_type', recordingDeviceTypes, 'key') }}
+        <div class="field field_checkbox">
+          {{ checkboxfield("diarization", "Enable", false) }}
+          <div class="field-instructions">
+            When enabled, output will be split by speaker. Individual passages will be prepended with [Speaker x] tags. Only supported for some languages.
+          </div>
         </div>
-      </div>
 
-      <div class="field">
-        <label class="field-label" for="phrases">Phrases &amp; Hints</label>
-        <div class="field-inner">
-          <textarea id="phrases" name="phrases" placeholder="special phrase, $MONTH"></textarea>
+        <div class="field">
+          <label class="field-label" for="speaker_count">Speaker Count</label>
+          <div class="field-inner">
+            <input
+              id="speaker_count"
+              type="number"
+              name="speaker_count"
+              required
+              value="2"
+              min="1"
+              max="15"
+            />
+          </div>
         </div>
-        <div class="field-instructions">
-          A comma-separated list (,) of known words and phrases that are sent as hints to the speech recognition algorithm so that it is more likely to recognize them. You can also supply <a href="https://cloud.google.com/speech-to-text/docs/class-tokens" target="_blank">class tokens</a> (e.g. $MONTH) that encode concepts commonly found in natural language.
-        </div>
-      </div>
+      </details>
 
-      <div class="field">
-        <label class="field-label" for="industry_code">NAICS Industry Code</label>
-        <div class="field-inner">
-          <input id="industry_code" type="text" name="industry_code" placeholder="e.g. 811192 for Car Washes " />
-        </div>
-        <div class="field-instructions">
-          6-digit NAICS code for the industry that the speech recognition request applies to. Setting this can lead to better recognition results for industry-specific vocabulary. <a href="https://www.naics.com/search/." target="_blank">See here</a> for more information.
-        </div>
-      </div>
-    </details>
+      <details class="form-accordion" open>
+        <summary>Output Settings</summary>
 
-    <div class="form-actions">
-      <button data-target="form.submit" type="submit">Transcribe</button>
-      <div data-target="form.spinner" class="spinner">Hang tight, this might take a long time</div>
-    </div>
-    <div data-target="form.error" class="form-error"></div>
-  </form>
+        <div class="field">
+          {{ checkboxfield("punctuation", "Enable punctuation", true) }}
+        </div>
+
+        <div class="field">
+          {{ checkboxfield("profanity_filter", "Enable profanity filter", false) }}
+        </div>
+
+        <div class="field">
+          {{ checkboxfield("force_sub_at_zero", "Force sub at 00:00:00", false) }}
+          <div class="field-instructions">
+          Enable this if you want to use the transcript in Adobe Premiere. (May be required in other video editing software as well)
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="transcript_format">Transcript Format</label>
+          <div class="field-inner">
+            {{ selectfield('transcript_format', formats, 'key') }}
+          </div>
+          <div class="field-instructions">
+            This tool outputs timestamped `.txt` files formatted as <a href="https://en.wikipedia.org/wiki/SubRip#File_format" target="_blank">.srt subtitles</a>. You can choose whether sentences are split into <em>passages</em> (better for reading) or by <em>punctuation</em> (better for video subtitles).
+          </div>
+        </div>
+      </details>
+
+      <details class="form-accordion">
+        <summary>Advanced Settings</summary>
+
+        <div class="field">
+          <label class="field-label" for="microphone_distance">Microphone Distance</label>
+          <div class="field-inner">
+            {{ selectfield('microphone_distance', microphoneDistances, 'key') }}
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="interaction_type">Interaction Type</label>
+          <div class="field-inner">
+            {{ selectfield('interaction_type', interactionTypes, 'key') }}
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="recording_device_type">Recording Device Type</label>
+          <div class="field-inner">
+            {{ selectfield('recording_device_type', recordingDeviceTypes, 'key') }}
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="phrases">Phrases &amp; Hints</label>
+          <div class="field-inner">
+            <textarea id="phrases" name="phrases" placeholder="special phrase, $MONTH"></textarea>
+          </div>
+          <div class="field-instructions">
+            A comma-separated list (,) of known words and phrases that are sent as hints to the speech recognition algorithm so that it is more likely to recognize them. You can also supply <a href="https://cloud.google.com/speech-to-text/docs/class-tokens" target="_blank">class tokens</a> (e.g. $MONTH) that encode concepts commonly found in natural language.
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="industry_code">NAICS Industry Code</label>
+          <div class="field-inner">
+            <input id="industry_code" type="text" name="industry_code" placeholder="e.g. 811192 for Car Washes " />
+          </div>
+          <div class="field-instructions">
+            6-digit NAICS code for the industry that the speech recognition request applies to. Setting this can lead to better recognition results for industry-specific vocabulary. <a href="https://www.naics.com/search/." target="_blank">See here</a> for more information.
+          </div>
+        </div>
+      </details>
+
+      <div class="form-actions">
+        <button data-target="form.submit" type="submit">Transcribe</button>
+        <div data-target="form.spinner" class="spinner">Hang tight, this might take a long time</div>
+      </div>
+      <div data-target="form.error" class="form-error"></div>
+    </form>
+
+    <section class="transcripts">
+      <header class="transcripts-header">
+        <h2 class="transcripts-title">Transcript History</h2>
+      </header>
+      <div class="spinner active" data-target="transcripts.spinner">Loading…</div>
+      <ol class="transcripts-list" data-target="transcripts.list"></ol>
+      <p class="transcripts-placeholder" data-target="transcripts.placeholder">No stored transcripts yet.</p>
+    </section>
+  </div>
 {% endblock %}

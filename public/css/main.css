@@ -67,6 +67,7 @@ button, .button {
   line-height: 1;
   color: black;
   cursor: pointer;
+  text-decoration: none;
   padding: 0.75rem;
   box-shadow: 2px 3px 0 3px darkblue;
 }
@@ -74,6 +75,12 @@ button, .button {
 .button:focus,
 button:focus {
   box-shadow: 0 0 0 3px aqua;
+}
+
+.button_nude {
+  background: none;
+  color: white;
+  box-shadow: none;
 }
 
 button[disabled],
@@ -434,6 +441,72 @@ select[aria-disabled=true] {
 
 .form-error.active {
   display: block;
+}
+
+/* Transcripts */
+.transcripts {
+  border: 1px solid silver;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.transcripts-header {
+  margin-bottom: 1rem;
+}
+
+.transcripts-title {
+  font-size: 1rem;
+}
+
+.transcripts-placeholder,
+.transcripts .spinner,
+.transcripts-list {
+  display: none;
+}
+
+.transcripts-placeholder.active,
+.transcripts .spinner.active,
+.transcripts-list.active {
+  display: block;
+}
+
+.transcripts-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.transcript {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  grid-gap: 2rem;
+  width: 100%;
+  font-size: 0.75rem;
+}
+
+.transcript + .transcript {
+  margin-top: 1rem;
+}
+
+.transcript-time {
+  grid-column: 1 / 2;
+  background: darkblue;
+  padding: 0.25rem;
+}
+
+.transcript-content {
+  grid-column: 2 / 3;
+}
+
+.transcript-actions {
+  display: flex;
+  flex-flow: row nowrap;
+  grid-column: 3 / 4;
+}
+
+.transcript-actions button:not(:first-child) {
+  margin-left: 0.5rem;
 }
 
 /* Animations */

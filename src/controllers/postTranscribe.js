@@ -27,13 +27,6 @@ const postTranscribe = (req, res, next) => {
     return next(err)
   }
 
-  const onError = (err) => {
-    debug('Sending error response')
-    req.unpipe(busboy)
-    next(err)
-    if (tmpPath) removeTempFile(tmpPath)
-  }
-
   const params = {}
 
   let hasFile = false
@@ -42,6 +35,13 @@ const postTranscribe = (req, res, next) => {
   let originalName
   let tmpPath
   let uploadPromise
+
+  const onError = (err) => {
+    debug('Sending error response')
+    req.unpipe(busboy)
+    next(err)
+    if (tmpPath) removeTempFile(tmpPath)
+  }
 
   busboy.on('field', (fieldname, value) => {
     const parseInt = (value) => value ? Number.parseInt(value, 10) : undefined
@@ -167,7 +167,7 @@ const postTranscribe = (req, res, next) => {
     try {
       const gcsUri = await gcsPromise
 
-      const [transcript] = await Promise.all([transcribe(gcsUri, params), removeTempFile(tmpPath)])
+      const [transcript] = await Promise.all([transcribe(gcsUri, params)])
 
       debug(`Sending transcript with ${transcript.length} characters`)
       const filename = `${originalName}.txt`
