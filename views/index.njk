@@ -1,7 +1,7 @@
 {% extends "layout.njk" %}
 
 {% macro selectfield(name, array, attribute) %}
-  <select name="{{name}}">
+  <select id="{{name}}" name="{{name}}">
     {% for val in array %}
       <option value="{{val[attribute]}}" {% if val.isDefault %}selected{% endif %}>
         {{-val.description-}}
@@ -12,7 +12,7 @@
 
 {% macro checkboxfield(name, label, checked) %}
   <label class="field_checkbox-label checkbox">
-    <input name="{{name}}" type="checkbox" {% if checked %}checked{% endif %} />
+    <input id="{{name}}" name="{{name}}" type="checkbox" {% if checked %}checked{% endif %} />
     <svg width="32" height="32" viewBox="-4 -4 39 39" aria-hidden="true" focusable="false">
       <rect class="cb-bg" width="35" height="35" x="-2" y="-2" stroke="currentColor" fill="none" stroke-width="3" rx="1" ry="1"></rect>
     </svg>
@@ -43,7 +43,6 @@
           name="file"
           id="file"
           required
-          multiple="false"
         />
       </div>
       <div class="field-instructions">
@@ -71,6 +70,7 @@
         <label class="field-label" for="speaker_count">Speaker Count</label>
         <div class="field-inner">
           <input
+            id="speaker_count"
             type="number"
             name="speaker_count"
             required
@@ -103,11 +103,7 @@
       <div class="field">
         <label class="field-label" for="transcript_format">Transcript Format</label>
         <div class="field-inner">
-          <select name="transcript_format">
-            {% for format in formats %}
-              <option value="{{format.key}}" {% if format.isDefault %}selected{% endif %}>{{format.description}}</option>
-            {% endfor %}
-          </select>
+          {{ selectfield('transcript_format', formats, 'key') }}
         </div>
         <div class="field-instructions">
           This tool outputs timestamped `.txt` files formatted as <a href="https://en.wikipedia.org/wiki/SubRip#File_format" target="_blank">.srt subtitles</a>. You can choose whether sentences are split into <em>passages</em> (better for reading) or by <em>punctuation</em> (better for video subtitles).
@@ -142,7 +138,7 @@
       <div class="field">
         <label class="field-label" for="phrases">Phrases &amp; Hints</label>
         <div class="field-inner">
-          <textarea name="phrases" placeholder="special phrase, $MONTH"></textarea>
+          <textarea id="phrases" name="phrases" placeholder="special phrase, $MONTH"></textarea>
         </div>
         <div class="field-instructions">
           A comma-separated list (,) of known words and phrases that are sent as hints to the speech recognition algorithm so that it is more likely to recognize them. You can also supply <a href="https://cloud.google.com/speech-to-text/docs/class-tokens" target="_blank">class tokens</a> (e.g. $MONTH) that encode concepts commonly found in natural language.
@@ -152,7 +148,7 @@
       <div class="field">
         <label class="field-label" for="industry_code">NAICS Industry Code</label>
         <div class="field-inner">
-          <input type="text" name="industry_code" placeholder="e.g. 811192 for Car Washes " />
+          <input id="industry_code" type="text" name="industry_code" placeholder="e.g. 811192 for Car Washes " />
         </div>
         <div class="field-instructions">
           6-digit NAICS code for the industry that the speech recognition request applies to. Setting this can lead to better recognition results for industry-specific vocabulary. <a href="https://www.naics.com/search/." target="_blank">See here</a> for more information.

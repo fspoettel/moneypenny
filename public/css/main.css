@@ -335,6 +335,7 @@ select[aria-disabled=true] {
 
 /* Header */
 .title {
+  line-height: 1.25;
   margin-bottom: 1rem;
 }
 
