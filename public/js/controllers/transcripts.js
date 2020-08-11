@@ -69,7 +69,7 @@ export default function makeTranscriptsController (application) {
       template.innerHTML = `
         <li class="transcript" data-key="${key}">
           <span class="transcript-time">${formatDate(createdOn)}</span>
-          <span class="transcript-content">${name}</span>
+          <span class="transcript-content" title="${name}">${name}</span>
           <div class="transcript-actions">
             <a class="button" download="${name}" href="${createDownloadUrlFromString(content)}" target="_blank">Download</a>
             <button class="button_nude" data-action="transcripts#onDelete">Delete</button>

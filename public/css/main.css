@@ -324,7 +324,7 @@ select[aria-disabled=true] {
 
 .footer {
   flex: 0 0 auto;
-  font-size: 0.75rem;
+  font-size: 0.625rem;
   text-align: center;
 }
 
@@ -350,7 +350,7 @@ select[aria-disabled=true] {
 }
 
 .sub {
-  font-size: 1rem;
+  font-size: 0.5rem;
 }
 
 @media screen and (min-width: 21.5rem) {
@@ -387,6 +387,10 @@ select[aria-disabled=true] {
     margin: 0;
     font-size: 6px;
   }
+
+  .sub {
+    font-size: 0.75rem;
+  }
 }
 
 @media screen and (min-width: 60rem) {
@@ -397,6 +401,10 @@ select[aria-disabled=true] {
   .title pre {
     margin: 0;
     font-size: 8px;
+  }
+
+  .sub {
+    font-size: 1rem;
   }
 }
 
@@ -476,12 +484,14 @@ select[aria-disabled=true] {
 }
 
 .transcript {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  grid-gap: 2rem;
   width: 100%;
   font-size: 0.75rem;
+}
+
+.transcript > * {
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 0.5rem
 }
 
 .transcript + .transcript {
@@ -489,23 +499,49 @@ select[aria-disabled=true] {
 }
 
 .transcript-time {
-  grid-column: 1 / 2;
   background: darkblue;
   padding: 0.25rem;
 }
 
 .transcript-content {
-  grid-column: 2 / 3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .transcript-actions {
   display: flex;
   flex-flow: row nowrap;
-  grid-column: 3 / 4;
 }
 
 .transcript-actions button:not(:first-child) {
   margin-left: 0.5rem;
+}
+
+@media screen and (min-width: 50rem) {
+  .transcript {
+    display: grid;
+    align-items: center;
+    grid-gap: 2rem;
+    grid-template-columns: auto 1fr auto;
+  }
+
+  .transcript > * {
+    margin-bottom: 0;
+  }
+
+  .transcript-time {
+    grid-column: 1 / 2;
+  }
+
+  .transcript-content {
+    grid-column: 2 / 3;
+  }
+
+
+  .transcript-actions {
+    grid-column: 3 / 4;
+  }
 }
 
 /* Animations */

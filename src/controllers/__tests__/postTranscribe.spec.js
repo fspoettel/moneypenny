@@ -7,7 +7,13 @@ const { makeApp } = require('../../app')
 const { gcsUploadStream, removeObject } = require('../../lib/googleCloud')
 const { getAudioSampleRate, flacEncoder } = require('../../lib/ffmpeg')
 const { transcribe } = require('../../lib/transcribe')
-const { INTERACTION_TYPE, RECORDING_TYPE_DEVICE, FORMATS, MICROPHONE_DISTANCE } = require('../../constants')
+const {
+  FILE_FORMATS,
+  INTERACTION_TYPE,
+  RECORDING_TYPE_DEVICE,
+  TRANSCRIPT_FORMATS,
+  MICROPHONE_DISTANCE
+} = require('../../constants')
 
 Date.now = jest.fn(() => 1597083792000)
 
@@ -56,16 +62,12 @@ describe('POST /transcribe', () => {
     })
 
     describe('when an invalid file is uploaded', () => {
-      let req
-
-      beforeEach(() => {
-        req = request(app)
-          .post('/transcribe')
-          .set('cookie', cookie)
-      })
+      const req = () => request(app)
+        .post('/transcribe')
+        .set('cookie', cookie)
 
       it('sends `400` error if no file is uploaded', (done) => {
-        req
+        req()
           .field('language_code', 'en-US')
           .end((err, res) => {
             if (err) return done(err)
@@ -76,7 +78,7 @@ describe('POST /transcribe', () => {
       })
 
       it('sends `400` error if file is not a media file', (done) => {
-        req
+        req()
           .attach('file', path.join(process.cwd(), '__fixtures__/sample-response.json'))
           .end((err, res) => {
             if (err) return done(err)
@@ -89,7 +91,7 @@ describe('POST /transcribe', () => {
       it('sends `400` error if sample_rate is too low', (done) => {
         getAudioSampleRate.mockImplementationOnce(() => 4000)
 
-        req
+        req()
           .attach('file', path.join(process.cwd(), '__fixtures__/yougotmail.mp3'))
           .end((err, res) => {
             if (err) return done(err)
@@ -101,18 +103,14 @@ describe('POST /transcribe', () => {
     })
 
     describe('when a valid file is uploaded', () => {
-      let req
-
-      beforeEach(() => {
-        req = request(app)
-          .post('/transcribe')
-          .set('cookie', cookie)
-          .attach('file', path.join(process.cwd(), '__fixtures__/yougotmail.mp3'))
-          .field('language_code', 'en-US')
-      })
+      const req = () => request(app)
+        .post('/transcribe')
+        .set('cookie', cookie)
+        .attach('file', path.join(process.cwd(), '__fixtures__/yougotmail.mp3'))
+        .field('language_code', 'en-US')
 
       it('sends a `200` response', (done) => {
-        req.end((err, res) => {
+        req().end((err, res) => {
           if (err) return done(err)
           expect(res.status).toEqual(200)
           done()
@@ -120,7 +118,7 @@ describe('POST /transcribe', () => {
       })
 
       it('calls processing modules with correct params', (done) => {
-        req
+        req()
           .field('speaker_count', '2')
           .field('diarization', 'on')
           .field('punctuation', 'on')
@@ -130,7 +128,7 @@ describe('POST /transcribe', () => {
           .field('microphone_distance', MICROPHONE_DISTANCE.NEARFIELD.key)
           .field('interaction_type', INTERACTION_TYPE.INTERACTION_TYPE_UNSPECIFIED.key)
           .field('recording_type_device', RECORDING_TYPE_DEVICE.RECORDING_DEVICE_TYPE_UNSPECIFIED.key)
-          .field('transcript_format', FORMATS.PUNCTUATION.key)
+          .field('transcript_format', TRANSCRIPT_FORMATS.PUNCTUATION.key)
           .field('phrases', 'foo,bar')
           .end((err, res) => {
             if (err) return done(err)
@@ -143,14 +141,27 @@ describe('POST /transcribe', () => {
           })
       })
 
-      it('sets the correct content headers', (done) => {
-        req.end((err, res) => {
-          if (err) return done(err)
-          expect(res.status).toEqual(200)
-          expect(res.header['content-disposition'].includes('yougotmail.txt')).toBeTruthy()
-          expect(res.header['content-type']).toEqual('text/plain; charset=utf-8')
-          done()
-        })
+      it('returns an .srt file if `file_format` field is set', (done) => {
+        req()
+          .field('file_format', FILE_FORMATS.SRT.key)
+          .end((err, res) => {
+            if (err) return done(err)
+            expect(res.status).toEqual(200)
+            expect(res.header['content-disposition'].includes('yougotmail.srt')).toBeTruthy()
+            expect(res.header['content-type']).toEqual('text/plain; charset=utf-8')
+            done()
+          })
+      })
+
+      it('returns an .txt file if `file_format` field is set', (done) => {
+        req()
+          .end((err, res) => {
+            if (err) return done(err)
+            expect(res.status).toEqual(200)
+            expect(res.header['content-disposition'].includes('yougotmail.txt')).toBeTruthy()
+            expect(res.header['content-type']).toEqual('text/plain; charset=utf-8')
+            done()
+          })
       })
     })
   })

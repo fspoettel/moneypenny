@@ -1,6 +1,6 @@
 const { transcribe } = require('../transcribe')
 const { recognize } = require('../googleCloud')
-const { FORMATS } = require('../../constants')
+const { TRANSCRIPT_FORMATS } = require('../../constants')
 const punctuationFormat = require('../formats/punctuation')
 const defaultFormat = require('../formats/default')
 
@@ -36,7 +36,7 @@ describe('transcribe()', () => {
     it('calls punctuationFormatter.encodeResult with result if params.transcriptForamt is set to PUNCTUATION', async () => {
       await transcribe(gcsKey, {
         diarization: false,
-        transcriptFormat: FORMATS.PUNCTUATION.key
+        transcriptFormat: TRANSCRIPT_FORMATS.PUNCTUATION.key
       })
 
       expect(punctuationFormat.encodeResult).toBeCalled()
@@ -52,7 +52,7 @@ describe('transcribe()', () => {
     it('calls punctuationFormatter.encodeResult with result if params.transcriptForamt is set to PUNCTUATION', async () => {
       await transcribe(gcsKey, {
         diarization: true,
-        transcriptFormat: FORMATS.PUNCTUATION.key
+        transcriptFormat: TRANSCRIPT_FORMATS.PUNCTUATION.key
       })
 
       expect(punctuationFormat.encodeDiarizedResult).toBeCalled()

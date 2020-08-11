@@ -3,7 +3,7 @@ const { getDefaultValue } = require('./helpers')
 const defaultFormat = require('./formats/default')
 const punctuationFormat = require('./formats/punctuation')
 const {
-  FORMATS,
+  TRANSCRIPT_FORMATS,
   INTERACTION_TYPE,
   LANGUAGES,
   MICROPHONE_DISTANCE,
@@ -19,7 +19,7 @@ async function transcribe (gcsKey, params = {}) {
   const languageCode = params.languageCode ?? 'en-US'
   const lang = LANGUAGES[languageCode]
 
-  const isPunctuationFormat = params.transcriptFormat === FORMATS.PUNCTUATION.key &&
+  const isPunctuationFormat = params.transcriptFormat === TRANSCRIPT_FORMATS.PUNCTUATION.key &&
     lang.punctuation
   const format = isPunctuationFormat ? punctuationFormat : defaultFormat
 

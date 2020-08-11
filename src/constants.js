@@ -5,7 +5,7 @@ class LimitError extends Error {}
 
 class UnauthenticatedError extends Error {}
 
-const FORMATS = {
+const TRANSCRIPT_FORMATS = {
   DEFAULT: {
     isDefault: true,
     description: 'Split by passages',
@@ -14,6 +14,19 @@ const FORMATS = {
   PUNCTUATION: {
     description: 'Split by punctuation',
     key: 'PUNCTUATION'
+  }
+}
+
+const FILE_FORMATS = {
+  TXT: {
+    isDefault: true,
+    description: '.txt',
+    key: 'txt'
+  },
+  SRT: {
+    isDefault: false,
+    description: '.srt',
+    key: 'srt'
   }
 }
 
@@ -1124,7 +1137,8 @@ module.exports = {
   LimitError,
   UnauthenticatedError,
   ValidationError,
-  FORMATS,
+  FILE_FORMATS,
+  TRANSCRIPT_FORMATS,
   INTERACTION_TYPE,
   LANGUAGES,
   LANGUAGE_ARRAY,
