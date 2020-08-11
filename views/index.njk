@@ -104,10 +104,17 @@
         <div class="field">
           <label class="field-label" for="transcript_format">Transcript Format</label>
           <div class="field-inner">
-            {{ selectfield('transcript_format', formats, 'key') }}
+            {{ selectfield('transcript_format', transcriptFormats, 'key') }}
           </div>
           <div class="field-instructions">
-            This tool outputs timestamped `.txt` files formatted as <a href="https://en.wikipedia.org/wiki/SubRip#File_format" target="_blank">.srt subtitles</a>. You can choose whether sentences are split into <em>passages</em> (better for reading) or by <em>punctuation</em> (better for video subtitles).
+            This tool outputs timestamped files formatted as <a href="https://en.wikipedia.org/wiki/SubRip#File_format" target="_blank">.srt subtitles</a>. You can choose whether sentences are split into <em>passages</em> (better for reading) or by <em>punctuation</em> (better for video subtitles).
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="transcript_format">File Format</label>
+          <div class="field-inner">
+            {{ selectfield('file_format', fileFormats, 'key') }}
           </div>
         </div>
       </details>

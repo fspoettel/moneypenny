@@ -8,7 +8,7 @@ const { gcsUploadStream, removeObject } = require('../lib/googleCloud')
 const { transcribe } = require('../lib/transcribe')
 const { flacEncoder, getAudioSampleRate } = require('../lib/ffmpeg')
 const { writeTempFile, removeTempFile } = require('../lib/disk')
-const { ValidationError, ORIGINAL_MEDIA_TYPE, LimitError } = require('../constants')
+const { ValidationError, ORIGINAL_MEDIA_TYPE, LimitError, FILE_FORMATS } = require('../constants')
 
 const debug = require('debug')('app:server')
 
@@ -31,10 +31,7 @@ const postTranscribe = (req, res, next) => {
 
   let hasFile = false
   let hasValidationError = false
-  let basename
-  let originalName
   let tmpPath
-  let uploadPromise
 
   const onError = (err) => {
     debug('Sending error response')
@@ -88,6 +85,9 @@ const postTranscribe = (req, res, next) => {
       case 'transcript_format':
         params.transcriptFormat = parseStr(value)
         break
+      case 'file_format':
+        params.fileFormat = parseStr(value)
+        break
       case 'phrases':
         params.phrases = parseArr(value)
         break
@@ -123,11 +123,11 @@ const postTranscribe = (req, res, next) => {
       return file.resume()
     }
 
-    debug(`Starting upload for file: ${basename}`)
-
-    originalName = path.basename(filename, path.extname(filename))
-    basename = `${Date.now()}-${originalName}`
+    const originalName = path.basename(filename, path.extname(filename))
+    const basename = `${Date.now()}-${originalName}`
     tmpPath = path.join(tmp, `${basename}.${fileType.ext}`)
+
+    debug(`Starting upload for file: ${basename}`)
 
     params.originalMimeType = fileType.mime
     params.originalMediaType = fileType.mime.startsWith('audio')
@@ -135,24 +135,12 @@ const postTranscribe = (req, res, next) => {
       : ORIGINAL_MEDIA_TYPE.VIDEO.key
 
     const { writeStream, promise } = writeTempFile(tmpPath)
-    uploadPromise = promise
-
     fileStream.pipe(writeStream)
-  })
-
-  busboy.on('finish', async () => {
-    debug('Finished parsing form data')
-    if (!hasFile || hasValidationError) return onError(new ValidationError('Error while processing file.'))
-
-    try {
-      await uploadPromise
-    } catch (err) {
-      return onError(err)
-    }
 
     let sampleRate
 
     try {
+      await promise
       sampleRate = await getAudioSampleRate(tmpPath)
       if (sampleRate == null) throw new ValidationError('Could not find audio tracks in media file')
       if (sampleRate < 8000) throw new ValidationError('Sample rates below 8,000 Hz are not supported')
@@ -160,17 +148,17 @@ const postTranscribe = (req, res, next) => {
       return onError(err)
     }
 
-    const { writeStream, promise: gcsPromise } = gcsUploadStream(`${basename}.flac`)
-    debug(`Starting encode and upload to GCS for ${basename}`)
-    flacEncoder(tmpPath, sampleRate).pipe(writeStream)
-
     try {
-      const gcsUri = await gcsPromise
+      debug(`Starting encode and upload to GCS for ${basename}`)
+      const { writeStream: gcsStream, promise: gcsPromise } = gcsUploadStream(`${basename}.flac`)
+      flacEncoder(tmpPath, sampleRate).pipe(gcsStream)
 
+      const gcsUri = await gcsPromise
       const [transcript] = await Promise.all([transcribe(gcsUri, params)])
 
       debug(`Sending transcript with ${transcript.length} characters`)
-      const filename = `${originalName}.txt`
+      const ext = params.fileFormat ?? FILE_FORMATS.TXT.key
+      const filename = `${originalName}.${ext}`
 
       res.set('Content-Type', 'text/plain')
       // See: https://stackoverflow.com/q/93551
@@ -183,6 +171,11 @@ const postTranscribe = (req, res, next) => {
     } catch (err) {
       return onError(err)
     }
+  })
+
+  busboy.on('finish', async () => {
+    debug('Finished parsing form data')
+    if (!hasFile || hasValidationError) return onError(new ValidationError('Error while processing file.'))
   })
 
   req.pipe(busboy)
