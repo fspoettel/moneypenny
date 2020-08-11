@@ -24,7 +24,7 @@ pre {
 }
 
 body {
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   line-height: 1.5;
   background: blue;
   color: white;
@@ -46,12 +46,6 @@ h6 {
 
 p {
   margin: 0;
-}
-
-@media screen and (min-width: 40rem) {
-  body {
-    font-size: 1rem;
-  }
 }
 
 /* Button */
@@ -355,6 +349,10 @@ select[aria-disabled=true] {
   font-size: 2px;
 }
 
+.sub {
+  font-size: 1rem;
+}
+
 @media screen and (min-width: 21.5rem) {
   .title pre {
     margin: 0;
@@ -410,6 +408,7 @@ select[aria-disabled=true] {
 }
 
 .form-accordion summary {
+  font-size: 1rem;
   margin-bottom: 0.75rem;
 }
 
