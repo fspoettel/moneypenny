@@ -69,9 +69,9 @@ export default function makeFormController (application) {
       } catch (err) {
         const message = await parseErrorFromResponse(err)
         this.showError(message)
+        this.setSubmitEnabled()
       } finally {
         this.hideSpinner()
-        this.setSubmitEnabled()
       }
     }
 
