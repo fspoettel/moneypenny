@@ -1,8 +1,31 @@
-import { isFileTooLarge } from './lib/helpers.js'
-import { postTranscribe } from './services/transcribe.js'
-import { download } from './lib/download.js'
+import { postTranscribe } from '../services/transcribe.js'
 
 const { Stimulus } = window
+
+export function isFileTooLarge (file, limitMb) {
+  if (!file || !file.size) return false
+  const size = (file.size / 1024 / 1024).toFixed(4) // MB
+  return size > Number.parseInt(limitMb, 10)
+}
+
+function parseFilenameFromResponse (response) {
+  const contentDisposition = response.headers.get('Content-Disposition')
+  const parsedFileName = /.*;filename\*=utf-8''(.*)$/.exec(contentDisposition)
+  const fileName = (parsedFileName && parsedFileName[1]) || 'transcript.txt'
+  return decodeURIComponent(fileName)
+}
+
+function parseErrorFromResponse (err) {
+  let errMessage = 'Internal Server Error'
+
+  if (err.message && err.message.includes('NetworkError')) {
+    errMessage = 'File is too large'
+  } else if (err.message) {
+    errMessage = err.message
+  }
+
+  return errMessage
+}
 
 export default function makeFormController (application) {
   application.register('form', class extends Stimulus.Controller {
@@ -41,12 +64,10 @@ export default function makeFormController (application) {
         }
 
         const response = await postTranscribe(new FormData(this.element))
-        await this.playSoundClip()
-        // TODO: this might fail, add manual way to download
-        await download(response)
+        await this.dispatchFinishEvent(response)
         this.resetForm()
       } catch (err) {
-        const message = await this.parseError(err)
+        const message = await parseErrorFromResponse(err)
         this.showError(message)
       } finally {
         this.hideSpinner()
@@ -54,32 +75,21 @@ export default function makeFormController (application) {
       }
     }
 
-    async parseError (err) {
-      let errMessage = 'Internal Server Error'
+    async dispatchFinishEvent (response) {
+      const event = document.createEvent('CustomEvent')
+      const blob = await response.blob()
+      const content = await blob.text()
+      const name = parseFilenameFromResponse(response)
+      const createdOn = Date.now()
 
-      if (err.message && err.message.includes('NetworkError')) {
-        errMessage = 'File is too large'
-      } else if (err.json) {
-        try {
-          const body = await err.json()
-          errMessage = body.message
-        } catch (err) { /**/ }
-      } else if (err.message) {
-        errMessage = err.message
-      }
+      event.initCustomEvent('form-finish', true, true, {
+        name,
+        createdOn,
+        content,
+        key: `mp-${createdOn}`
+      })
 
-      return errMessage
-    }
-
-    playSoundClip () {
-      try {
-        const audio = new Audio('/static/yougotmail.mp3')
-        audio.preload = true
-        audio.volume = 0.25
-        if (audio) audio.play()
-      } catch (err) {
-        console.error(err)
-      }
+      this.element.dispatchEvent(event)
     }
 
     resetForm () {

@@ -1,4 +1,3 @@
-
 export async function postTranscribe (formData) {
   const response = await fetch('/transcribe', {
     method: 'POST',
@@ -6,5 +5,7 @@ export async function postTranscribe (formData) {
   })
 
   if (response.status >= 200 && response.status < 300) return response
-  throw response
+  // Errors are sent as JSON responses
+  const error = await response.json()
+  throw error
 }
