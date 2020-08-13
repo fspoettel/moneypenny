@@ -27,6 +27,16 @@ function parseErrorFromResponse (err) {
   return errMessage
 }
 
+function readBlobAsString (blob) {
+  return new Promise((resolve, reject) => {
+    const fileReader = new FileReader()
+    fileReader.addEventListener('load', () => resolve(fileReader.result))
+    fileReader.addEventListener('abort', reject)
+    fileReader.addEventListener('error', reject)
+    fileReader.readAsText(blob, 'utf-8')
+  })
+}
+
 export default function makeFormController (application) {
   application.register('form', class extends Stimulus.Controller {
     static get targets () {
@@ -78,7 +88,9 @@ export default function makeFormController (application) {
     async dispatchFinishEvent (response) {
       const event = document.createEvent('CustomEvent')
       const blob = await response.blob()
-      const content = await blob.text()
+
+      const content = await readBlobAsString(blob)
+
       const name = parseFilenameFromResponse(response)
       const createdOn = Date.now()
 
