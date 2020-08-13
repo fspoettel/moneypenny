@@ -284,7 +284,7 @@ select[aria-disabled=true] {
 
 /* Layout */
 .page {
-  padding: 2rem;
+  padding: 1rem;
 }
 
 .main {
@@ -314,7 +314,7 @@ select[aria-disabled=true] {
 
 @media screen and (min-width: 40rem) {
   .page {
-    padding: 2rem 4.5rem;
+    padding: 1rem 4.5rem;
   }
 }
 
@@ -359,10 +359,6 @@ select[aria-disabled=true] {
   .title pre {
     margin: 0;
     font-size: 5px;
-  }
-
-  .page {
-    padding: 2rem 4.5rem;
   }
 }
 
