@@ -20,6 +20,17 @@
   </label>
 {% endmacro %}
 
+{% macro spinner() %}
+  <div data-target="form.spinner" class="spinner">
+    <div class="spinner-animation" data-controller="stepper" data-logo-interval="500">
+      <span class="active" data-target="stepper.step">◡◡</span>
+      <span data-target="stepper.step">⊙⊙</span>
+      <span data-target="stepper.step">◠◠</span>
+    </div>
+    <span>Hang tight, this might take a long time</span>
+  </div>
+{% endmacro %}
+
 {% block content %}
   <div class="transcripts-container" data-controller="transcripts" data-action="form-finish->transcripts#onNewTranscript">
     <form
@@ -166,7 +177,7 @@
 
       <div class="form-actions">
         <button data-target="form.submit" type="submit">Transcribe</button>
-        <div data-target="form.spinner" class="spinner">Hang tight, this might take a long time</div>
+        {{spinner()}}
       </div>
       <div data-target="form.error" class="form-error"></div>
     </form>

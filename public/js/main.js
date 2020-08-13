@@ -1,11 +1,11 @@
 // should work without JS, progressive enhancement only
 import makeFormController from './controllers/form.js'
-import makeLogoController from './controllers/logo.js'
+import makeStepperController from './controllers/stepper.js'
 import makeTranscriptsController from './controllers/transcripts.js'
 
 const { Stimulus } = window
 const application = Stimulus.Application.start()
 
-makeLogoController(application)
+makeStepperController(application)
 makeFormController(application)
 makeTranscriptsController(application)

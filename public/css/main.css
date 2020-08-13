@@ -277,25 +277,9 @@ select[aria-disabled=true] {
   display: inline-block;
 }
 
-.spinner::before {
-  content: "◡◡";
+.spinner-animation {
+  display: inline-block;
   font-size: 1.5rem;
-  animation: spin 1s infinite linear;
-  margin-right: 0.25rem;
-}
-
-@keyframes spin {
-  0% {
-    content: "◡◡";
-  }
-
-  33.333% {
-    content: "⊙⊙";
-  }
-
-  66.666% {
-    content: "◠◠";
-  }
 }
 
 /* Layout */
@@ -545,10 +529,10 @@ select[aria-disabled=true] {
 }
 
 /* Animations */
-[data-controller="logo"] > * {
+[data-controller="stepper"] [data-target="stepper.step"] {
   display: none;
 }
 
-[data-controller="logo"] > .active {
+[data-controller="stepper"] [data-target="stepper.step"].active {
   display: block;
 }

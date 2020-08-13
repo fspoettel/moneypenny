@@ -1,13 +1,16 @@
 const { Stimulus } = window
 
-export default function makeLogoController (application) {
-  application.register('logo', class extends Stimulus.Controller {
+export default function makeStepperController (application) {
+  application.register('stepper', class extends Stimulus.Controller {
     static get targets () {
       return ['step']
     }
 
     connect () {
-      const interval = setInterval(this.onTick.bind(this), 1000)
+      const interval = setInterval(
+        this.onTick.bind(this),
+        this.data.get('interval') || 1000
+      )
       this.data.set('interval', interval)
     }
 
