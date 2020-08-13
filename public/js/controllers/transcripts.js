@@ -77,7 +77,7 @@ export default function makeTranscriptsController (application) {
         </li>
       `.trim()
 
-      this.listTarget.append(template.content.childNodes[0])
+      this.listTarget.insertAdjacentElement('afterbegin', template.content.childNodes[0])
     }
 
     showList () {
