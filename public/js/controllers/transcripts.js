@@ -1,9 +1,27 @@
-import { downloadString, createDownloadUrlFromString } from '../lib/download.js'
-
 const { Stimulus } = window
 
 function formatDate (date) {
   return new Intl.DateTimeFormat(window.locale).format(date)
+}
+
+function createDownloadUrlFromString (str) {
+  const blob = new Blob([str], { type: 'text/plain' })
+  return window.URL.createObjectURL(blob)
+}
+
+function startDownload (url, filename) {
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename
+  a.style.display = 'none'
+  document.body.appendChild(a)
+  a.click()
+}
+
+async function downloadString (str, filename) {
+  const url = await createDownloadUrlFromString(str)
+  startDownload(url, filename)
+  window.URL.revokeObjectURL(url)
 }
 
 function playSoundClip () {

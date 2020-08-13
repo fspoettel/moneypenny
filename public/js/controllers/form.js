@@ -1,11 +1,18 @@
-import { postTranscribe } from '../services/transcribe.js'
-
 const { Stimulus } = window
 
 export function isFileTooLarge (file, limitMb) {
   if (!file || !file.size) return false
   const size = (file.size / 1024 / 1024).toFixed(4) // MB
   return size > Number.parseInt(limitMb, 10)
+}
+
+async function postTranscribe (formData) {
+  const response = await fetch('/transcribe', { method: 'POST', body: formData })
+
+  if (response.status >= 200 && response.status < 300) return response
+  // Errors are sent as JSON responses
+  const error = await response.json()
+  throw error
 }
 
 function parseFilenameFromResponse (response) {
