@@ -19,7 +19,7 @@
     "fluent-ffmpeg": "^2.1.2",
     "helmet": "^3.23.3",
     "iconv-lite": "^0.6.2",
-    "minimist": "^1.2.5",
+    "minimist": "^1.2.6",
     "nunjucks": "^3.2.1",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
